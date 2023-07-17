@@ -34,48 +34,39 @@ namespace {
 // compile-time gcd and lcm
 // TODO: Use C++17 gcd interface?
 
-template<intmax_t a, intmax_t b>
-struct nanogcd
-{
+template <intmax_t a, intmax_t b>
+struct nanogcd {
   static const intmax_t value = nanogcd<b, a % b>::value;
 };
 
-template<intmax_t a>
-struct nanogcd<a, 0>
-{
+template <intmax_t a>
+struct nanogcd<a, 0> {
   static const intmax_t value = a;
 };
 
-template<>
-struct nanogcd<0, 0>
-{
+template <>
+struct nanogcd<0, 0> {
   static const intmax_t value = 1;
 };
 
-
-template<intmax_t a, intmax_t b>
-struct nanolcm
-{
+template <intmax_t a, intmax_t b>
+struct nanolcm {
   static const intmax_t value = a / nanogcd<a, b>::value * b;
 };
 
-
-template<intmax_t val>
-struct nanoabs
-{
+template <intmax_t val>
+struct nanoabs {
   static const intmax_t value = val < 0 ? -val : val;
 };
 
-template<intmax_t val>
-struct nanosign
-{
+template <intmax_t val>
+struct nanosign {
   static const intmax_t value = val == 0 ? 0 : (val < 0 ? -1 : 1);
 };
 
+}  // namespace
 
-} // namespace
-
-template<intmax_t N, intmax_t D = 1>
+template <intmax_t N, intmax_t D = 1>
 class ratio {
  private:
   static_assert(D != 0, "Division by zero");
@@ -90,28 +81,25 @@ class ratio {
   static constexpr intmax_t den = _Dabs / _gcd;
 
   typedef ratio<num, den> type;
-
 };
 
-
 typedef ratio<1LL, 1000000000000000000LL> atto;
-typedef ratio<1LL,    1000000000000000LL> femto;
-typedef ratio<1LL,       1000000000000LL> pico;
-typedef ratio<1LL,          1000000000LL> nano;
-typedef ratio<1LL,             1000000LL> micro;
-typedef ratio<1LL,                1000LL> milli;
-typedef ratio<1LL,                 100LL> centi;
-typedef ratio<1LL,                  10LL> deci;
-typedef ratio<                 10LL, 1LL> deca;
-typedef ratio<                100LL, 1LL> hecto;
-typedef ratio<               1000LL, 1LL> kilo;
-typedef ratio<            1000000LL, 1LL> mega;
-typedef ratio<         1000000000LL, 1LL> giga;
-typedef ratio<      1000000000000LL, 1LL> tera;
-typedef ratio<   1000000000000000LL, 1LL> peta;
+typedef ratio<1LL, 1000000000000000LL> femto;
+typedef ratio<1LL, 1000000000000LL> pico;
+typedef ratio<1LL, 1000000000LL> nano;
+typedef ratio<1LL, 1000000LL> micro;
+typedef ratio<1LL, 1000LL> milli;
+typedef ratio<1LL, 100LL> centi;
+typedef ratio<1LL, 10LL> deci;
+typedef ratio<10LL, 1LL> deca;
+typedef ratio<100LL, 1LL> hecto;
+typedef ratio<1000LL, 1LL> kilo;
+typedef ratio<1000000LL, 1LL> mega;
+typedef ratio<1000000000LL, 1LL> giga;
+typedef ratio<1000000000000LL, 1LL> tera;
+typedef ratio<1000000000000000LL, 1LL> peta;
 typedef ratio<1000000000000000000LL, 1LL> exa;
 
+}  // namespace nanostl
 
-} // namespace nanostl
-
-#endif // NANOSTL_CHRONO_H_
+#endif  // NANOSTL_CHRONO_H_

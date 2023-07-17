@@ -47,7 +47,6 @@
 #define __NANOSTL_NOEXCEPT_(x)
 #endif
 
-
 // TODO(LTE): Implement
 #ifndef _NANOSTL_TEMPLATE_VIS
 #define _NANOSTL_TEMPLATE_VIS
@@ -96,7 +95,7 @@ union IEEE754Double {
 
 using size_t = unsigned long long;
 
-} // namespace
+}  // namespace
 
 }  // namespace nanostl
 

@@ -24,12 +24,12 @@
 #ifndef NANOSTL_H_
 #define NANOSTL_H_
 
-#include "nanovector.h"
-#include "nanostring.h"
-#include "nanomap.h"
-#include "nanolimits.h"
 #include "nanoalgorithm.h"
-#include "nanomath.h"
 #include "nanoiostream.h"
+#include "nanolimits.h"
+#include "nanomap.h"
+#include "nanomath.h"
+#include "nanostring.h"
+#include "nanovector.h"
 
-#endif // NANOSTL_H_
+#endif  // NANOSTL_H_

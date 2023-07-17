@@ -30,12 +30,10 @@
 
 namespace nanostl {
 
-class logic_error
-{
-    explicit logic_error(const string&);
-    explicit logic_error(const char*);
+class logic_error {
+  explicit logic_error(const string&);
+  explicit logic_error(const char*);
 };
-
 
 }  // namespace nanostl
 

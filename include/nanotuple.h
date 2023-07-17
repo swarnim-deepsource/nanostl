@@ -34,4 +34,4 @@ using tao::tuple;
 
 }
 
-#endif // NANOSTL_TUPLE_H_
+#endif  // NANOSTL_TUPLE_H_

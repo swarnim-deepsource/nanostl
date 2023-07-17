@@ -25,13 +25,14 @@
 #ifndef NANOSTL_IOS_H_
 #define NANOSTL_IOS_H_
 
+#include "__string"
 #include "nanoiosfwd.h"
 #include "nanotype_traits.h"
-#include "__string"
 
 namespace nanostl {
 
-// ptrdiff_t is implementation dependent, but usually `long int`(int64 for 64bit system)
+// ptrdiff_t is implementation dependent, but usually `long int`(int64 for 64bit
+// system)
 typedef long int streamsize;
 
 class ios_base {
@@ -77,63 +78,52 @@ class ios_base {
   // destructor
   virtual ~ios_base();
 
-
   inline bool good() const;
   inline bool eof() const;
   inline bool fail() const;
   inline bool bad() const;
 
+ private:
+  ios_base(const ios_base&) = delete;
+  ios_base& operator=(const ios_base&) = delete;
 
-
-private:
-    ios_base(const ios_base&) = delete;
-    ios_base& operator=(const ios_base&) = delete;
-
-protected:
-    ios_base() {
-               }
-
+ protected:
+  ios_base() {}
 };
 
 // Based on libcxx ----------------------------
 
 template <class _CharT, class _Traits>
-class basic_ios
-    : public ios_base
-{
-public:
-    // types:
-    typedef _CharT char_type;
-    typedef _Traits traits_type;
+class basic_ios : public ios_base {
+ public:
+  // types:
+  typedef _CharT char_type;
+  typedef _Traits traits_type;
 
-    typedef typename traits_type::int_type int_type;
-    //typedef typename traits_type::pos_type pos_type; // TODO
-    typedef typename traits_type::off_type off_type;
+  typedef typename traits_type::int_type int_type;
+  // typedef typename traits_type::pos_type pos_type; // TODO
+  typedef typename traits_type::off_type off_type;
 
-    static_assert((is_same<_CharT, typename traits_type::char_type>::value),
-                  "traits_type::char_type must be the same type as CharT");
+  static_assert((is_same<_CharT, typename traits_type::char_type>::value),
+                "traits_type::char_type must be the same type as CharT");
 
+  explicit operator bool() const { return !fail(); }
 
-    explicit operator bool() const {return !fail();}
-
-    inline bool operator!() const    {return  fail();}
-    //inline iostate rdstate() const   {return ios_base::rdstate();}
-    //inline void clear(iostate __state = goodbit) {ios_base::clear(__state);}
-    //inline void setstate(iostate __state) {ios_base::setstate(__state);}
-    inline bool good() const {return ios_base::good();}
-    inline bool eof() const  {return ios_base::eof();}
-    inline bool fail() const {return ios_base::fail();}
-    inline bool bad() const  {return ios_base::bad();}
-
+  inline bool operator!() const { return fail(); }
+  // inline iostate rdstate() const   {return ios_base::rdstate();}
+  // inline void clear(iostate __state = goodbit) {ios_base::clear(__state);}
+  // inline void setstate(iostate __state) {ios_base::setstate(__state);}
+  inline bool good() const { return ios_base::good(); }
+  inline bool eof() const { return ios_base::eof(); }
+  inline bool fail() const { return ios_base::fail(); }
+  inline bool bad() const { return ios_base::bad(); }
 };
 
-class ios_base::Init
-{
-public:
-    Init();
-    ~Init();
+class ios_base::Init {
+ public:
+  Init();
+  ~Init();
 };
-
 
 }  // namespace nanostl
 

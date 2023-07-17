@@ -25,10 +25,10 @@
 #ifndef NANOSTL___STRUTIL_H_
 #define NANOSTL___STRUTIL_H_
 
+#include "nanocassert.h"
 #include "nanocommon.h"
 #include "nanocstdint.h"
 #include "nanocstring.h"
-#include "nanocassert.h"
 
 namespace nanostl {
 
@@ -64,8 +64,6 @@ namespace ryu {
 #define RYU_DOUBLE_BIAS 1023
 #define RYU_DOUBLE_EXPONENT_BIAS 1023
 
-
-
 #if defined(RYU_OPTIMIZE_SIZE)
 #error
 /* "ryu/d2s_small_table.h" */
@@ -74,7 +72,6 @@ namespace ryu {
 #endif
 #define RYU_FLOAT_POW5_INV_BITCOUNT (RYU_DOUBLE_POW5_INV_BITCOUNT - 64)
 #define RYU_FLOAT_POW5_BITCOUNT (RYU_DOUBLE_POW5_BITCOUNT - 64)
-
 
 // A floating decimal representing m * 10^e.
 typedef struct floating_decimal_32 {
@@ -87,47 +84,47 @@ typedef struct floating_decimal_32 {
 // Returns e == 0 ? 1 : [log_2(5^e)]; requires 0 <= e <= 3528.
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline int32_t log2pow5(const int32_t e) {
-  // This approximation works up to the point that the multiplication overflows at e = 3529.
-  // If the multiplication were done in 64 bits, it would fail at 5^4004 which is just greater
-  // than 2^9297.
+  // This approximation works up to the point that the multiplication overflows
+  // at e = 3529. If the multiplication were done in 64 bits, it would fail at
+  // 5^4004 which is just greater than 2^9297.
   assert(e >= 0);
   assert(e <= 3528);
-  return (int32_t) ((((uint32_t) e) * 1217359) >> 19);
+  return (int32_t)((((uint32_t)e) * 1217359) >> 19);
 }
 
 // Returns e == 0 ? 1 : ceil(log_2(5^e)); requires 0 <= e <= 3528.
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline int32_t pow5bits(const int32_t e) {
-  // This approximation works up to the point that the multiplication overflows at e = 3529.
-  // If the multiplication were done in 64 bits, it would fail at 5^4004 which is just greater
-  // than 2^9297.
+  // This approximation works up to the point that the multiplication overflows
+  // at e = 3529. If the multiplication were done in 64 bits, it would fail at
+  // 5^4004 which is just greater than 2^9297.
   assert(e >= 0);
   assert(e <= 3528);
-  return (int32_t) (((((uint32_t) e) * 1217359) >> 19) + 1);
+  return (int32_t)(((((uint32_t)e) * 1217359) >> 19) + 1);
 }
 
 // Returns e == 0 ? 1 : ceil(log_2(5^e)); requires 0 <= e <= 3528.
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline int32_t ceil_log2pow5(const int32_t e) {
-  return log2pow5(e) + 1;
-}
+static inline int32_t ceil_log2pow5(const int32_t e) { return log2pow5(e) + 1; }
 
 // Returns floor(log_10(2^e)); requires 0 <= e <= 1650.
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline uint32_t log10Pow2(const int32_t e) {
-  // The first value this approximation fails for is 2^1651 which is just greater than 10^297.
+  // The first value this approximation fails for is 2^1651 which is just
+  // greater than 10^297.
   assert(e >= 0);
   assert(e <= 1650);
-  return (((uint32_t) e) * 78913) >> 18;
+  return (((uint32_t)e) * 78913) >> 18;
 }
 
 // Returns floor(log_10(5^e)); requires 0 <= e <= 2620.
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline uint32_t log10Pow5(const int32_t e) {
-  // The first value this approximation fails for is 5^2621 which is just greater than 10^1832.
+  // The first value this approximation fails for is 5^2621 which is just
+  // greater than 10^1832.
   assert(e >= 0);
   assert(e <= 2620);
-  return (((uint32_t) e) * 732923) >> 20;
+  return (((uint32_t)e) * 732923) >> 20;
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
@@ -148,13 +145,15 @@ static inline uint32_t pow5factor_32(uint32_t value) {
 
 // Returns true if value is divisible by 5^p.
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline bool multipleOfPowerOf5_32(const uint32_t value, const uint32_t p) {
+static inline bool multipleOfPowerOf5_32(const uint32_t value,
+                                         const uint32_t p) {
   return pow5factor_32(value) >= p;
 }
 
 // Returns true if value is divisible by 2^p.
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline bool multipleOfPowerOf2_32(const uint32_t value, const uint32_t p) {
+static inline bool multipleOfPowerOf2_32(const uint32_t value,
+                                         const uint32_t p) {
   // __builtin_ctz doesn't appear to be faster here.
   return (value & ((1u << p) - 1)) == 0;
 }
@@ -162,7 +161,8 @@ static inline bool multipleOfPowerOf2_32(const uint32_t value, const uint32_t p)
 // It seems to be slightly faster to avoid uint128_t here, although the
 // generated code for uint128_t looks slightly nicer.
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint32_t mulShift32(const uint32_t m, const uint64_t factor, const int32_t shift) {
+static inline uint32_t mulShift32(const uint32_t m, const uint64_t factor,
+                                  const int32_t shift) {
   assert(shift > 32);
 
   // The casts here help MSVC to avoid calls to the __allmul library
@@ -188,22 +188,24 @@ static inline uint32_t mulShift32(const uint32_t m, const uint64_t factor, const
     const int32_t s = shift - 32;
     return (bits1Hi << (32 - s)) | (bits1Lo >> s);
   }
-#else // RYU_32_BIT_PLATFORM
+#else   // RYU_32_BIT_PLATFORM
   const uint64_t sum = (bits0 >> 32) + bits1;
   const uint64_t shiftedSum = sum >> (shift - 32);
-  assert(shiftedSum <= 4294967295); // UINT32_MAX
-  return (uint32_t) shiftedSum;
-#endif // RYU_32_BIT_PLATFORM
+  assert(shiftedSum <= 4294967295);  // UINT32_MAX
+  return (uint32_t)shiftedSum;
+#endif  // RYU_32_BIT_PLATFORM
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint32_t mulPow5InvDivPow2(const uint32_t m, const uint32_t q, const int32_t j) {
+static inline uint32_t mulPow5InvDivPow2(const uint32_t m, const uint32_t q,
+                                         const int32_t j) {
 #if defined(RYU_FLOAT_FULL_TABLE)
   return mulShift32(m, FLOAT_POW5_INV_SPLIT[q], j);
 #elif defined(RYU_OPTIMIZE_SIZE)
-  // The inverse multipliers are defined as [2^x / 5^y] + 1; the upper 64 bits from the double lookup
-  // table are the correct bits for [2^x / 5^y], so we have to add 1 here. Note that we rely on the
-  // fact that the added 1 that's already stored in the table never overflows into the upper 64 bits.
+  // The inverse multipliers are defined as [2^x / 5^y] + 1; the upper 64 bits
+  // from the double lookup table are the correct bits for [2^x / 5^y], so we
+  // have to add 1 here. Note that we rely on the fact that the added 1 that's
+  // already stored in the table never overflows into the upper 64 bits.
   uint64_t pow5[2];
   double_computeInvPow5(q, pow5);
   return mulShift32(m, pow5[1] + 1, j);
@@ -212,9 +214,9 @@ static inline uint32_t mulPow5InvDivPow2(const uint32_t m, const uint32_t q, con
 #endif
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint32_t mulPow5divPow2(const uint32_t m, const uint32_t i, const int32_t j) {
+static inline uint32_t mulPow5divPow2(const uint32_t m, const uint32_t i,
+                                      const int32_t j) {
 #if defined(RYU_FLOAT_FULL_TABLE)
   return mulShift32(m, FLOAT_POW5_SPLIT[i], j);
 #elif defined(RYU_OPTIMIZE_SIZE)
@@ -226,9 +228,9 @@ static inline uint32_t mulPow5divPow2(const uint32_t m, const uint32_t i, const 
 #endif
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_t ieeeExponent) {
+static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa,
+                                      const uint32_t ieeeExponent) {
   int32_t e2;
   uint32_t m2;
   if (ieeeExponent == 0) {
@@ -236,7 +238,7 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
     e2 = 1 - RYU_FLOAT_BIAS - RYU_FLOAT_MANTISSA_BITS - 2;
     m2 = ieeeMantissa;
   } else {
-    e2 = (int32_t) ieeeExponent - RYU_FLOAT_BIAS - RYU_FLOAT_MANTISSA_BITS - 2;
+    e2 = (int32_t)ieeeExponent - RYU_FLOAT_BIAS - RYU_FLOAT_MANTISSA_BITS - 2;
     m2 = (1u << RYU_FLOAT_MANTISSA_BITS) | ieeeMantissa;
   }
   const bool even = (m2 & 1) == 0;
@@ -261,9 +263,9 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
   uint8_t lastRemovedDigit = 0;
   if (e2 >= 0) {
     const uint32_t q = log10Pow2(e2);
-    e10 = (int32_t) q;
-    const int32_t k = RYU_FLOAT_POW5_INV_BITCOUNT + pow5bits((int32_t) q) - 1;
-    const int32_t i = -e2 + (int32_t) q + k;
+    e10 = (int32_t)q;
+    const int32_t k = RYU_FLOAT_POW5_INV_BITCOUNT + pow5bits((int32_t)q) - 1;
+    const int32_t i = -e2 + (int32_t)q + k;
     vr = mulPow5InvDivPow2(mv, q, i);
     vp = mulPow5InvDivPow2(mp, q, i);
     vm = mulPow5InvDivPow2(mm, q, i);
@@ -272,15 +274,20 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
     printf("V+=%u\nV =%u\nV-=%u\n", vp, vr, vm);
 #endif
     if (q != 0 && (vp - 1) / 10 <= vm / 10) {
-      // We need to know one removed digit even if we are not going to loop below. We could use
-      // q = X - 1 above, except that would require 33 bits for the result, and we've found that
-      // 32-bit arithmetic is faster even on 64-bit machines.
-      const int32_t l = RYU_FLOAT_POW5_INV_BITCOUNT + pow5bits((int32_t) (q - 1)) - 1;
-      lastRemovedDigit = (uint8_t) (mulPow5InvDivPow2(mv, q - 1, -e2 + (int32_t) q - 1 + l) % 10);
+      // We need to know one removed digit even if we are not going to loop
+      // below. We could use q = X - 1 above, except that would require 33 bits
+      // for the result, and we've found that 32-bit arithmetic is faster even
+      // on 64-bit machines.
+      const int32_t l =
+          RYU_FLOAT_POW5_INV_BITCOUNT + pow5bits((int32_t)(q - 1)) - 1;
+      lastRemovedDigit =
+          (uint8_t)(mulPow5InvDivPow2(mv, q - 1, -e2 + (int32_t)q - 1 + l) %
+                    10);
     }
     if (q <= 9) {
-      // The largest power of 5 that fits in 24 bits is 5^10, but q <= 9 seems to be safe as well.
-      // Only one of mp, mv, and mm can be a multiple of 5, if any.
+      // The largest power of 5 that fits in 24 bits is 5^10, but q <= 9 seems
+      // to be safe as well. Only one of mp, mv, and mm can be a multiple of 5,
+      // if any.
       if (mv % 5 == 0) {
         vrIsTrailingZeros = multipleOfPowerOf5_32(mv, q);
       } else if (acceptBounds) {
@@ -291,25 +298,26 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
     }
   } else {
     const uint32_t q = log10Pow5(-e2);
-    e10 = (int32_t) q + e2;
-    const int32_t i = -e2 - (int32_t) q;
+    e10 = (int32_t)q + e2;
+    const int32_t i = -e2 - (int32_t)q;
     const int32_t k = pow5bits(i) - RYU_FLOAT_POW5_BITCOUNT;
-    int32_t j = (int32_t) q - k;
-    vr = mulPow5divPow2(mv, (uint32_t) i, j);
-    vp = mulPow5divPow2(mp, (uint32_t) i, j);
-    vm = mulPow5divPow2(mm, (uint32_t) i, j);
+    int32_t j = (int32_t)q - k;
+    vr = mulPow5divPow2(mv, (uint32_t)i, j);
+    vp = mulPow5divPow2(mp, (uint32_t)i, j);
+    vm = mulPow5divPow2(mm, (uint32_t)i, j);
 #ifdef RYU_DEBUG
     printf("%u * 5^%d / 10^%u\n", mv, -e2, q);
     printf("%u %d %d %d\n", q, i, k, j);
     printf("V+=%u\nV =%u\nV-=%u\n", vp, vr, vm);
 #endif
     if (q != 0 && (vp - 1) / 10 <= vm / 10) {
-      j = (int32_t) q - 1 - (pow5bits(i + 1) - RYU_FLOAT_POW5_BITCOUNT);
-      lastRemovedDigit = (uint8_t) (mulPow5divPow2(mv, (uint32_t) (i + 1), j) % 10);
+      j = (int32_t)q - 1 - (pow5bits(i + 1) - RYU_FLOAT_POW5_BITCOUNT);
+      lastRemovedDigit =
+          (uint8_t)(mulPow5divPow2(mv, (uint32_t)(i + 1), j) % 10);
     }
     if (q <= 1) {
-      // {vr,vp,vm} is trailing zeros if {mv,mp,mm} has at least q trailing 0 bits.
-      // mv = 4 * m2, so it always has at least two trailing 0 bits.
+      // {vr,vp,vm} is trailing zeros if {mv,mp,mm} has at least q trailing 0
+      // bits. mv = 4 * m2, so it always has at least two trailing 0 bits.
       vrIsTrailingZeros = true;
       if (acceptBounds) {
         // mm = mv - 1 - mmShift, so it has 1 trailing 0 bit iff mmShift == 1.
@@ -318,7 +326,7 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
         // mp = mv + 2, so it always has at least one trailing 0 bit.
         --vp;
       }
-    } else if (q < 31) { // TODO(ulfjack): Use a tighter bound here.
+    } else if (q < 31) {  // TODO(ulfjack): Use a tighter bound here.
       vrIsTrailingZeros = multipleOfPowerOf2_32(mv, q - 1);
 #ifdef RYU_DEBUG
       printf("vr is trailing zeros=%s\n", vrIsTrailingZeros ? "true" : "false");
@@ -333,13 +341,14 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
   printf("vr is trailing zeros=%s\n", vrIsTrailingZeros ? "true" : "false");
 #endif
 
-  // Step 4: Find the shortest decimal representation in the interval of valid representations.
+  // Step 4: Find the shortest decimal representation in the interval of valid
+  // representations.
   int32_t removed = 0;
   uint32_t output;
   if (vmIsTrailingZeros || vrIsTrailingZeros) {
     // General case, which happens rarely (~4.0%).
     while (vp / 10 > vm / 10) {
-#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=23106
+#ifdef __clang__  // https://bugs.llvm.org/show_bug.cgi?id=23106
       // The compiler does not realize that vm % 10 can be computed from vm / 10
       // as vm - (vm / 10) * 10.
       vmIsTrailingZeros &= vm - (vm / 10) * 10 == 0;
@@ -347,7 +356,7 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
       vmIsTrailingZeros &= vm % 10 == 0;
 #endif
       vrIsTrailingZeros &= lastRemovedDigit == 0;
-      lastRemovedDigit = (uint8_t) (vr % 10);
+      lastRemovedDigit = (uint8_t)(vr % 10);
       vr /= 10;
       vp /= 10;
       vm /= 10;
@@ -360,7 +369,7 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
     if (vmIsTrailingZeros) {
       while (vm % 10 == 0) {
         vrIsTrailingZeros &= lastRemovedDigit == 0;
-        lastRemovedDigit = (uint8_t) (vr % 10);
+        lastRemovedDigit = (uint8_t)(vr % 10);
         vr /= 10;
         vp /= 10;
         vm /= 10;
@@ -376,13 +385,14 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
       lastRemovedDigit = 4;
     }
     // We need to take vr + 1 if vr is outside bounds or we need to round up.
-    output = vr + ((vr == vm && (!acceptBounds || !vmIsTrailingZeros)) || lastRemovedDigit >= 5);
+    output = vr + ((vr == vm && (!acceptBounds || !vmIsTrailingZeros)) ||
+                   lastRemovedDigit >= 5);
   } else {
-    // Specialized for the common case (~96.0%). Percentages below are relative to this.
-    // Loop iterations below (approximately):
-    // 0: 13.6%, 1: 70.7%, 2: 14.1%, 3: 1.39%, 4: 0.14%, 5+: 0.01%
+    // Specialized for the common case (~96.0%). Percentages below are relative
+    // to this. Loop iterations below (approximately): 0: 13.6%, 1: 70.7%,
+    // 2: 14.1%, 3: 1.39%, 4: 0.14%, 5+: 0.01%
     while (vp / 10 > vm / 10) {
-      lastRemovedDigit = (uint8_t) (vr % 10);
+      lastRemovedDigit = (uint8_t)(vr % 10);
       vr /= 10;
       vp /= 10;
       vm /= 10;
@@ -409,23 +419,38 @@ static inline floating_decimal_32 f2d(const uint32_t ieeeMantissa, const uint32_
   return fd;
 }
 
-
-
-// Returns the number of decimal digits in v, which must not contain more than 9 digits.
+// Returns the number of decimal digits in v, which must not contain more than 9
+// digits.
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline uint32_t decimalLength9(const uint32_t v) {
   // Function precondition: v is not a 10-digit number.
   // (f2s: 9 digits are sufficient for round-tripping.)
   // (d2fixed: We print 9-digit blocks.)
   assert(v < 1000000000);
-  if (v >= 100000000) { return 9; }
-  if (v >= 10000000) { return 8; }
-  if (v >= 1000000) { return 7; }
-  if (v >= 100000) { return 6; }
-  if (v >= 10000) { return 5; }
-  if (v >= 1000) { return 4; }
-  if (v >= 100) { return 3; }
-  if (v >= 10) { return 2; }
+  if (v >= 100000000) {
+    return 9;
+  }
+  if (v >= 10000000) {
+    return 8;
+  }
+  if (v >= 1000000) {
+    return 7;
+  }
+  if (v >= 100000) {
+    return 6;
+  }
+  if (v >= 10000) {
+    return 5;
+  }
+  if (v >= 1000) {
+    return 4;
+  }
+  if (v >= 100) {
+    return 3;
+  }
+  if (v >= 10) {
+    return 2;
+  }
   return 1;
 }
 
@@ -436,22 +461,54 @@ static inline uint32_t decimalLength17(const uint64_t v) {
   // Function precondition: v is not an 18, 19, or 20-digit number.
   // (17 digits are sufficient for round-tripping.)
   assert(v < 100000000000000000L);
-  if (v >= 10000000000000000L) { return 17; }
-  if (v >= 1000000000000000L) { return 16; }
-  if (v >= 100000000000000L) { return 15; }
-  if (v >= 10000000000000L) { return 14; }
-  if (v >= 1000000000000L) { return 13; }
-  if (v >= 100000000000L) { return 12; }
-  if (v >= 10000000000L) { return 11; }
-  if (v >= 1000000000L) { return 10; }
-  if (v >= 100000000L) { return 9; }
-  if (v >= 10000000L) { return 8; }
-  if (v >= 1000000L) { return 7; }
-  if (v >= 100000L) { return 6; }
-  if (v >= 10000L) { return 5; }
-  if (v >= 1000L) { return 4; }
-  if (v >= 100L) { return 3; }
-  if (v >= 10L) { return 2; }
+  if (v >= 10000000000000000L) {
+    return 17;
+  }
+  if (v >= 1000000000000000L) {
+    return 16;
+  }
+  if (v >= 100000000000000L) {
+    return 15;
+  }
+  if (v >= 10000000000000L) {
+    return 14;
+  }
+  if (v >= 1000000000000L) {
+    return 13;
+  }
+  if (v >= 100000000000L) {
+    return 12;
+  }
+  if (v >= 10000000000L) {
+    return 11;
+  }
+  if (v >= 1000000000L) {
+    return 10;
+  }
+  if (v >= 100000000L) {
+    return 9;
+  }
+  if (v >= 10000000L) {
+    return 8;
+  }
+  if (v >= 1000000L) {
+    return 7;
+  }
+  if (v >= 100000L) {
+    return 6;
+  }
+  if (v >= 10000L) {
+    return 5;
+  }
+  if (v >= 1000L) {
+    return 4;
+  }
+  if (v >= 100L) {
+    return 3;
+  }
+  if (v >= 10L) {
+    return 2;
+  }
   return 1;
 }
 
@@ -460,13 +517,15 @@ static inline uint32_t decimalLength17(const uint64_t v) {
 #include <intrin.h>
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t umul128(const uint64_t a, const uint64_t b, uint64_t* const productHi) {
+static inline uint64_t umul128(const uint64_t a, const uint64_t b,
+                               uint64_t* const productHi) {
   return _umul128(a, b, productHi);
 }
 
 // Returns the lower 64 bits of (hi*2^64 + lo) >> dist, with 0 < dist < 64.
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t shiftright128(const uint64_t lo, const uint64_t hi, const uint32_t dist) {
+static inline uint64_t shiftright128(const uint64_t lo, const uint64_t hi,
+                                     const uint32_t dist) {
   // For the __shiftright128 intrinsic, the shift value is always
   // modulo 64.
   // In the current implementation of the double-precision version
@@ -478,13 +537,14 @@ static inline uint64_t shiftright128(const uint64_t lo, const uint64_t hi, const
   // Check this here in case a future change requires larger shift
   // values. In this case this function needs to be adjusted.
   assert(dist < 64);
-  return __shiftright128(lo, hi, (unsigned char) dist);
+  return __shiftright128(lo, hi, (unsigned char)dist);
 }
 
-#else // defined(HAS_64_BIT_INTRINSICS)
+#else  // defined(HAS_64_BIT_INTRINSICS)
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t umul128(const uint64_t a, const uint64_t b, uint64_t* const productHi) {
+static inline uint64_t umul128(const uint64_t a, const uint64_t b,
+                               uint64_t* const productHi) {
   // The casts here help MSVC to avoid calls to the __allmul library function.
   const uint32_t aLo = (uint32_t)a;
   const uint32_t aHi = (uint32_t)(a >> 32);
@@ -515,15 +575,15 @@ static inline uint64_t umul128(const uint64_t a, const uint64_t b, uint64_t* con
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t shiftright128(const uint64_t lo, const uint64_t hi, const uint32_t dist) {
+static inline uint64_t shiftright128(const uint64_t lo, const uint64_t hi,
+                                     const uint32_t dist) {
   // We don't need to handle the case dist >= 64 here (see above).
   assert(dist < 64);
   assert(dist > 0);
   return (hi << (64 - dist)) | (lo >> dist);
 }
 
-#endif // defined(HAS_64_BIT_INTRINSICS)
-
+#endif  // defined(HAS_64_BIT_INTRINSICS)
 
 #if defined(RYU_32_BIT_PLATFORM)
 
@@ -589,42 +649,32 @@ static inline uint32_t mod1e9(const uint64_t x) {
   // We can also simplify (uint32_t) (1000000000 * div1e9(x)).
   // We can truncate before multiplying instead of after, as multiplying
   // the highest 32 bits of div1e9(x) can't affect the lowest 32 bits.
-  return ((uint32_t) x) - 1000000000 * ((uint32_t) div1e9(x));
+  return ((uint32_t)x) - 1000000000 * ((uint32_t)div1e9(x));
 }
 
-#else // defined(RYU_32_BIT_PLATFORM)
-
-NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t div5(const uint64_t x) {
-  return x / 5;
-}
+#else  // defined(RYU_32_BIT_PLATFORM)
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t div10(const uint64_t x) {
-  return x / 10;
-}
+static inline uint64_t div5(const uint64_t x) { return x / 5; }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t div100(const uint64_t x) {
-  return x / 100;
-}
+static inline uint64_t div10(const uint64_t x) { return x / 10; }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t div1e8(const uint64_t x) {
-  return x / 100000000;
-}
+static inline uint64_t div100(const uint64_t x) { return x / 100; }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t div1e9(const uint64_t x) {
-  return x / 1000000000;
-}
+static inline uint64_t div1e8(const uint64_t x) { return x / 100000000; }
+
+NANOSTL_HOST_AND_DEVICE_QUAL
+static inline uint64_t div1e9(const uint64_t x) { return x / 1000000000; }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline uint32_t mod1e9(const uint64_t x) {
-  return (uint32_t) (x - 1000000000 * div1e9(x));
+  return (uint32_t)(x - 1000000000 * div1e9(x));
 }
 
-#endif // defined(RYU_32_BIT_PLATFORM)
+#endif  // defined(RYU_32_BIT_PLATFORM)
 
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline uint32_t pow5Factor(uint64_t value) {
@@ -632,7 +682,7 @@ static inline uint32_t pow5Factor(uint64_t value) {
   for (;;) {
     assert(value != 0);
     const uint64_t q = div5(value);
-    const uint32_t r = ((uint32_t) value) - 5 * ((uint32_t) q);
+    const uint32_t r = ((uint32_t)value) - 5 * ((uint32_t)q);
     if (r != 0) {
       break;
     }
@@ -658,25 +708,28 @@ static inline bool multipleOfPowerOf2(const uint64_t value, const uint32_t p) {
   return (value & ((1ull << p) - 1)) == 0;
 }
 
-
 // A table of all two-digit numbers. This is used to speed up decimal digit
 // generation by copying pairs of digits into the final output.
 NANOSTL_HOST_AND_DEVICE_QUAL
 static const char DIGIT_TABLE[200] = {
-  '0','0','0','1','0','2','0','3','0','4','0','5','0','6','0','7','0','8','0','9',
-  '1','0','1','1','1','2','1','3','1','4','1','5','1','6','1','7','1','8','1','9',
-  '2','0','2','1','2','2','2','3','2','4','2','5','2','6','2','7','2','8','2','9',
-  '3','0','3','1','3','2','3','3','3','4','3','5','3','6','3','7','3','8','3','9',
-  '4','0','4','1','4','2','4','3','4','4','4','5','4','6','4','7','4','8','4','9',
-  '5','0','5','1','5','2','5','3','5','4','5','5','5','6','5','7','5','8','5','9',
-  '6','0','6','1','6','2','6','3','6','4','6','5','6','6','6','7','6','8','6','9',
-  '7','0','7','1','7','2','7','3','7','4','7','5','7','6','7','7','7','8','7','9',
-  '8','0','8','1','8','2','8','3','8','4','8','5','8','6','8','7','8','8','8','9',
-  '9','0','9','1','9','2','9','3','9','4','9','5','9','6','9','7','9','8','9','9'
-};
+    '0', '0', '0', '1', '0', '2', '0', '3', '0', '4', '0', '5', '0', '6', '0',
+    '7', '0', '8', '0', '9', '1', '0', '1', '1', '1', '2', '1', '3', '1', '4',
+    '1', '5', '1', '6', '1', '7', '1', '8', '1', '9', '2', '0', '2', '1', '2',
+    '2', '2', '3', '2', '4', '2', '5', '2', '6', '2', '7', '2', '8', '2', '9',
+    '3', '0', '3', '1', '3', '2', '3', '3', '3', '4', '3', '5', '3', '6', '3',
+    '7', '3', '8', '3', '9', '4', '0', '4', '1', '4', '2', '4', '3', '4', '4',
+    '4', '5', '4', '6', '4', '7', '4', '8', '4', '9', '5', '0', '5', '1', '5',
+    '2', '5', '3', '5', '4', '5', '5', '5', '6', '5', '7', '5', '8', '5', '9',
+    '6', '0', '6', '1', '6', '2', '6', '3', '6', '4', '6', '5', '6', '6', '6',
+    '7', '6', '8', '6', '9', '7', '0', '7', '1', '7', '2', '7', '3', '7', '4',
+    '7', '5', '7', '6', '7', '7', '7', '8', '7', '9', '8', '0', '8', '1', '8',
+    '2', '8', '3', '8', '4', '8', '5', '8', '6', '8', '7', '8', '8', '8', '9',
+    '9', '0', '9', '1', '9', '2', '9', '3', '9', '4', '9', '5', '9', '6', '9',
+    '7', '9', '8', '9', '9'};
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline int copy_special_str(char * const result, const bool sign, const bool exponent, const bool mantissa) {
+static inline int copy_special_str(char* const result, const bool sign,
+                                   const bool exponent, const bool mantissa) {
   if (mantissa) {
     memcpy(result, "NaN", 3);
     return 3;
@@ -692,7 +745,6 @@ static inline int copy_special_str(char * const result, const bool sign, const b
   return sign + 3;
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
 static inline uint32_t float_to_bits(const float f) {
   uint32_t bits = 0;
@@ -707,9 +759,9 @@ static inline uint64_t double_to_bits(const double d) {
   return bits;
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline int to_chars(const floating_decimal_32 v, const bool sign, char* const result) {
+static inline int to_chars(const floating_decimal_32 v, const bool sign,
+                           char* const result) {
   // Step 5: Print the decimal representation.
   int index = 0;
   if (sign) {
@@ -734,7 +786,7 @@ static inline int to_chars(const floating_decimal_32 v, const bool sign, char* c
   // result[index] = '0' + output % 10;
   uint32_t i = 0;
   while (output >= 10000) {
-#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
+#ifdef __clang__  // https://bugs.llvm.org/show_bug.cgi?id=38217
     const uint32_t c = output - 10000 * (output / 10000);
 #else
     const uint32_t c = output % 10000;
@@ -758,7 +810,7 @@ static inline int to_chars(const floating_decimal_32 v, const bool sign, char* c
     result[index + olength - i] = DIGIT_TABLE[c + 1];
     result[index] = DIGIT_TABLE[c];
   } else {
-    result[index] = (char) ('0' + output);
+    result[index] = (char)('0' + output);
   }
 
   // Print decimal point if needed.
@@ -771,7 +823,7 @@ static inline int to_chars(const floating_decimal_32 v, const bool sign, char* c
 
   // Print the exponent.
   result[index++] = 'E';
-  int32_t exp = v.exponent + (int32_t) olength - 1;
+  int32_t exp = v.exponent + (int32_t)olength - 1;
   if (exp < 0) {
     result[index++] = '-';
     exp = -exp;
@@ -781,7 +833,7 @@ static inline int to_chars(const floating_decimal_32 v, const bool sign, char* c
     memcpy(result + index, DIGIT_TABLE + 2 * exp, 2);
     index += 2;
   } else {
-    result[index++] = (char) ('0' + exp);
+    result[index++] = (char)('0' + exp);
   }
 
   return index;
@@ -789,7 +841,8 @@ static inline int to_chars(const floating_decimal_32 v, const bool sign, char* c
 
 NANOSTL_HOST_AND_DEVICE_QUAL
 static int f2s_buffered_n(float f, char* result) {
-  // Step 1: Decode the floating-point number, and unify normalized and subnormal cases.
+  // Step 1: Decode the floating-point number, and unify normalized and
+  // subnormal cases.
   const uint32_t bits = float_to_bits(f);
 
 #ifdef RYU_DEBUG
@@ -801,12 +854,15 @@ static int f2s_buffered_n(float f, char* result) {
 #endif
 
   // Decode bits into sign, mantissa, and exponent.
-  const bool ieeeSign = ((bits >> (RYU_FLOAT_MANTISSA_BITS + RYU_FLOAT_EXPONENT_BITS)) & 1) != 0;
+  const bool ieeeSign =
+      ((bits >> (RYU_FLOAT_MANTISSA_BITS + RYU_FLOAT_EXPONENT_BITS)) & 1) != 0;
   const uint32_t ieeeMantissa = bits & ((1u << RYU_FLOAT_MANTISSA_BITS) - 1);
-  const uint32_t ieeeExponent = (bits >> RYU_FLOAT_MANTISSA_BITS) & ((1u << RYU_FLOAT_EXPONENT_BITS) - 1);
+  const uint32_t ieeeExponent =
+      (bits >> RYU_FLOAT_MANTISSA_BITS) & ((1u << RYU_FLOAT_EXPONENT_BITS) - 1);
 
   // Case distinction; exit early for the easy cases.
-  if (ieeeExponent == ((1u << RYU_FLOAT_EXPONENT_BITS) - 1u) || (ieeeExponent == 0 && ieeeMantissa == 0)) {
+  if (ieeeExponent == ((1u << RYU_FLOAT_EXPONENT_BITS) - 1u) ||
+      (ieeeExponent == 0 && ieeeMantissa == 0)) {
     return copy_special_str(result, ieeeSign, ieeeExponent, ieeeMantissa);
   }
 
@@ -823,7 +879,6 @@ static void f2s_buffered(float f, char* result) {
   result[index] = '\0';
 }
 
-
 // A floating decimal representing m * 10^e.
 typedef struct floating_decimal_64 {
   uint64_t mantissa;
@@ -833,41 +888,44 @@ typedef struct floating_decimal_64 {
 } floating_decimal_64;
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t mulShift64(const uint64_t m, const uint64_t* const mul, const int32_t j) {
+static inline uint64_t mulShift64(const uint64_t m, const uint64_t* const mul,
+                                  const int32_t j) {
   // m is maximum 55 bits
-  uint64_t high1;                                   // 128
-  const uint64_t low1 = umul128(m, mul[1], &high1); // 64
-  uint64_t high0;                                   // 64
-  umul128(m, mul[0], &high0);                       // 0
+  uint64_t high1;                                    // 128
+  const uint64_t low1 = umul128(m, mul[1], &high1);  // 64
+  uint64_t high0;                                    // 64
+  umul128(m, mul[0], &high0);                        // 0
   const uint64_t sum = high0 + low1;
   if (sum < high0) {
-    ++high1; // overflow into high1
+    ++high1;  // overflow into high1
   }
   return shiftright128(sum, high1, j - 64);
 }
 
 // This is faster if we don't have a 64x64->128-bit multiplication.
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline uint64_t mulShiftAll64(uint64_t m, const uint64_t* const mul, const int32_t j,
-  uint64_t* const vp, uint64_t* const vm, const uint32_t mmShift) {
+static inline uint64_t mulShiftAll64(uint64_t m, const uint64_t* const mul,
+                                     const int32_t j, uint64_t* const vp,
+                                     uint64_t* const vm,
+                                     const uint32_t mmShift) {
   m <<= 1;
   // m is maximum 55 bits
   uint64_t tmp;
   const uint64_t lo = umul128(m, mul[0], &tmp);
   uint64_t hi;
   const uint64_t mid = tmp + umul128(m, mul[1], &hi);
-  hi += mid < tmp; // overflow into hi
+  hi += mid < tmp;  // overflow into hi
 
   const uint64_t lo2 = lo + mul[0];
   const uint64_t mid2 = mid + mul[1] + (lo2 < lo);
   const uint64_t hi2 = hi + (mid2 < mid);
-  *vp = shiftright128(mid2, hi2, (uint32_t) (j - 64 - 1));
+  *vp = shiftright128(mid2, hi2, (uint32_t)(j - 64 - 1));
 
   if (mmShift == 1) {
     const uint64_t lo3 = lo - mul[0];
     const uint64_t mid3 = mid - mul[1] - (lo3 > lo);
     const uint64_t hi3 = hi - (mid3 > mid);
-    *vm = shiftright128(mid3, hi3, (uint32_t) (j - 64 - 1));
+    *vm = shiftright128(mid3, hi3, (uint32_t)(j - 64 - 1));
   } else {
     const uint64_t lo3 = lo + lo;
     const uint64_t mid3 = mid + mid + (lo3 < lo);
@@ -875,15 +933,15 @@ static inline uint64_t mulShiftAll64(uint64_t m, const uint64_t* const mul, cons
     const uint64_t lo4 = lo3 - mul[0];
     const uint64_t mid4 = mid3 - mul[1] - (lo4 > lo3);
     const uint64_t hi4 = hi3 - (mid4 > mid3);
-    *vm = shiftright128(mid4, hi4, (uint32_t) (j - 64));
+    *vm = shiftright128(mid4, hi4, (uint32_t)(j - 64));
   }
 
-  return shiftright128(mid, hi, (uint32_t) (j - 64 - 1));
+  return shiftright128(mid, hi, (uint32_t)(j - 64 - 1));
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_t ieeeExponent) {
+static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa,
+                                      const uint32_t ieeeExponent) {
   int32_t e2;
   uint64_t m2;
   if (ieeeExponent == 0) {
@@ -891,7 +949,7 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
     e2 = 1 - RYU_DOUBLE_BIAS - RYU_DOUBLE_MANTISSA_BITS - 2;
     m2 = ieeeMantissa;
   } else {
-    e2 = (int32_t) ieeeExponent - RYU_DOUBLE_BIAS - RYU_DOUBLE_MANTISSA_BITS - 2;
+    e2 = (int32_t)ieeeExponent - RYU_DOUBLE_BIAS - RYU_DOUBLE_MANTISSA_BITS - 2;
     m2 = (1ull << RYU_DOUBLE_MANTISSA_BITS) | ieeeMantissa;
   }
   const bool even = (m2 & 1) == 0;
@@ -918,9 +976,9 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
     // I tried special-casing q == 0, but there was no effect on performance.
     // This expression is slightly faster than max(0, log10Pow2(e2) - 1).
     const uint32_t q = log10Pow2(e2) - (e2 > 3);
-    e10 = (int32_t) q;
-    const int32_t k = RYU_DOUBLE_POW5_INV_BITCOUNT + pow5bits((int32_t) q) - 1;
-    const int32_t i = -e2 + (int32_t) q + k;
+    e10 = (int32_t)q;
+    const int32_t k = RYU_DOUBLE_POW5_INV_BITCOUNT + pow5bits((int32_t)q) - 1;
+    const int32_t i = -e2 + (int32_t)q + k;
 #if defined(RYU_OPTIMIZE_SIZE)
     uint64_t pow5[2];
     double_computeInvPow5(q, pow5);
@@ -936,7 +994,7 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
       // This should use q <= 22, but I think 21 is also safe. Smaller values
       // may still be safe, but it's more difficult to reason about them.
       // Only one of mp, mv, and mm can be a multiple of 5, if any.
-      const uint32_t mvMod5 = ((uint32_t) mv) - 5 * ((uint32_t) div5(mv));
+      const uint32_t mvMod5 = ((uint32_t)mv) - 5 * ((uint32_t)div5(mv));
       if (mvMod5 == 0) {
         vrIsTrailingZeros = multipleOfPowerOf5(mv, q);
       } else if (acceptBounds) {
@@ -952,10 +1010,10 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
   } else {
     // This expression is slightly faster than max(0, log10Pow5(-e2) - 1).
     const uint32_t q = log10Pow5(-e2) - (-e2 > 1);
-    e10 = (int32_t) q + e2;
-    const int32_t i = -e2 - (int32_t) q;
+    e10 = (int32_t)q + e2;
+    const int32_t i = -e2 - (int32_t)q;
     const int32_t k = pow5bits(i) - RYU_DOUBLE_POW5_BITCOUNT;
-    const int32_t j = (int32_t) q - k;
+    const int32_t j = (int32_t)q - k;
 #if defined(RYU_OPTIMIZE_SIZE)
     uint64_t pow5[2];
     double_computePow5(i, pow5);
@@ -969,8 +1027,8 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
     printf("V+=%" PRIu64 "\nV =%" PRIu64 "\nV-=%" PRIu64 "\n", vp, vr, vm);
 #endif
     if (q <= 1) {
-      // {vr,vp,vm} is trailing zeros if {mv,mp,mm} has at least q trailing 0 bits.
-      // mv = 4 * m2, so it always has at least two trailing 0 bits.
+      // {vr,vp,vm} is trailing zeros if {mv,mp,mm} has at least q trailing 0
+      // bits. mv = 4 * m2, so it always has at least two trailing 0 bits.
       vrIsTrailingZeros = true;
       if (acceptBounds) {
         // mm = mv - 1 - mmShift, so it has 1 trailing 0 bit iff mmShift == 1.
@@ -979,7 +1037,7 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
         // mp = mv + 2, so it always has at least one trailing 0 bit.
         --vp;
       }
-    } else if (q < 63) { // TODO(ulfjack): Use a tighter bound here.
+    } else if (q < 63) {  // TODO(ulfjack): Use a tighter bound here.
       // We want to know if the full product has at least q trailing zeros.
       // We need to compute min(p2(mv), p5(mv) - e2) >= q
       // <=> p2(mv) >= q && p5(mv) - e2 >= q
@@ -997,7 +1055,8 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
   printf("vr is trailing zeros=%s\n", vrIsTrailingZeros ? "true" : "false");
 #endif
 
-  // Step 4: Find the shortest decimal representation in the interval of valid representations.
+  // Step 4: Find the shortest decimal representation in the interval of valid
+  // representations.
   int32_t removed = 0;
   uint8_t lastRemovedDigit = 0;
   uint64_t output;
@@ -1010,12 +1069,12 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
       if (vpDiv10 <= vmDiv10) {
         break;
       }
-      const uint32_t vmMod10 = ((uint32_t) vm) - 10 * ((uint32_t) vmDiv10);
+      const uint32_t vmMod10 = ((uint32_t)vm) - 10 * ((uint32_t)vmDiv10);
       const uint64_t vrDiv10 = div10(vr);
-      const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
+      const uint32_t vrMod10 = ((uint32_t)vr) - 10 * ((uint32_t)vrDiv10);
       vmIsTrailingZeros &= vmMod10 == 0;
       vrIsTrailingZeros &= lastRemovedDigit == 0;
-      lastRemovedDigit = (uint8_t) vrMod10;
+      lastRemovedDigit = (uint8_t)vrMod10;
       vr = vrDiv10;
       vp = vpDiv10;
       vm = vmDiv10;
@@ -1028,15 +1087,15 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
     if (vmIsTrailingZeros) {
       for (;;) {
         const uint64_t vmDiv10 = div10(vm);
-        const uint32_t vmMod10 = ((uint32_t) vm) - 10 * ((uint32_t) vmDiv10);
+        const uint32_t vmMod10 = ((uint32_t)vm) - 10 * ((uint32_t)vmDiv10);
         if (vmMod10 != 0) {
           break;
         }
         const uint64_t vpDiv10 = div10(vp);
         const uint64_t vrDiv10 = div10(vr);
-        const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
+        const uint32_t vrMod10 = ((uint32_t)vr) - 10 * ((uint32_t)vrDiv10);
         vrIsTrailingZeros &= lastRemovedDigit == 0;
-        lastRemovedDigit = (uint8_t) vrMod10;
+        lastRemovedDigit = (uint8_t)vrMod10;
         vr = vrDiv10;
         vp = vpDiv10;
         vm = vmDiv10;
@@ -1052,15 +1111,18 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
       lastRemovedDigit = 4;
     }
     // We need to take vr + 1 if vr is outside bounds or we need to round up.
-    output = vr + ((vr == vm && (!acceptBounds || !vmIsTrailingZeros)) || lastRemovedDigit >= 5);
+    output = vr + ((vr == vm && (!acceptBounds || !vmIsTrailingZeros)) ||
+                   lastRemovedDigit >= 5);
   } else {
-    // Specialized for the common case (~99.3%). Percentages below are relative to this.
+    // Specialized for the common case (~99.3%). Percentages below are relative
+    // to this.
     bool roundUp = false;
     const uint64_t vpDiv100 = div100(vp);
     const uint64_t vmDiv100 = div100(vm);
-    if (vpDiv100 > vmDiv100) { // Optimization: remove two digits at a time (~86.2%).
+    if (vpDiv100 >
+        vmDiv100) {  // Optimization: remove two digits at a time (~86.2%).
       const uint64_t vrDiv100 = div100(vr);
-      const uint32_t vrMod100 = ((uint32_t) vr) - 100 * ((uint32_t) vrDiv100);
+      const uint32_t vrMod100 = ((uint32_t)vr) - 100 * ((uint32_t)vrDiv100);
       roundUp = vrMod100 >= 50;
       vr = vrDiv100;
       vp = vpDiv100;
@@ -1078,7 +1140,7 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
         break;
       }
       const uint64_t vrDiv10 = div10(vr);
-      const uint32_t vrMod10 = ((uint32_t) vr) - 10 * ((uint32_t) vrDiv10);
+      const uint32_t vrMod10 = ((uint32_t)vr) - 10 * ((uint32_t)vrDiv10);
       roundUp = vrMod10 >= 5;
       vr = vrDiv10;
       vp = vpDiv10;
@@ -1106,9 +1168,9 @@ static inline floating_decimal_64 d2d(const uint64_t ieeeMantissa, const uint32_
   return fd;
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline int to_chars(const floating_decimal_64 v, const bool sign, char* const result) {
+static inline int to_chars(const floating_decimal_64 v, const bool sign,
+                           char* const result) {
   // Step 5: Print the decimal representation.
   int index = 0;
   if (sign) {
@@ -1140,7 +1202,7 @@ static inline int to_chars(const floating_decimal_64 v, const bool sign, char* c
   if ((output >> 32) != 0) {
     // Expensive 64-bit division.
     const uint64_t q = div1e8(output);
-    uint32_t output2 = ((uint32_t) output) - 100000000 * ((uint32_t) q);
+    uint32_t output2 = ((uint32_t)output) - 100000000 * ((uint32_t)q);
     output = q;
 
     const uint32_t c = output2 % 10000;
@@ -1156,9 +1218,9 @@ static inline int to_chars(const floating_decimal_64 v, const bool sign, char* c
     memcpy(result + index + olength - i - 7, DIGIT_TABLE + d1, 2);
     i += 8;
   }
-  uint32_t output2 = (uint32_t) output;
+  uint32_t output2 = (uint32_t)output;
   while (output2 >= 10000) {
-#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
+#ifdef __clang__  // https://bugs.llvm.org/show_bug.cgi?id=38217
     const uint32_t c = output2 - 10000 * (output2 / 10000);
 #else
     const uint32_t c = output2 % 10000;
@@ -1182,7 +1244,7 @@ static inline int to_chars(const floating_decimal_64 v, const bool sign, char* c
     result[index + olength - i] = DIGIT_TABLE[c + 1];
     result[index] = DIGIT_TABLE[c];
   } else {
-    result[index] = (char) ('0' + output2);
+    result[index] = (char)('0' + output2);
   }
 
   // Print decimal point if needed.
@@ -1195,7 +1257,7 @@ static inline int to_chars(const floating_decimal_64 v, const bool sign, char* c
 
   // Print the exponent.
   result[index++] = 'E';
-  int32_t exp = v.exponent + (int32_t) olength - 1;
+  int32_t exp = v.exponent + (int32_t)olength - 1;
   if (exp < 0) {
     result[index++] = '-';
     exp = -exp;
@@ -1204,23 +1266,25 @@ static inline int to_chars(const floating_decimal_64 v, const bool sign, char* c
   if (exp >= 100) {
     const int32_t c = exp % 10;
     memcpy(result + index, DIGIT_TABLE + 2 * (exp / 10), 2);
-    result[index + 2] = (char) ('0' + c);
+    result[index + 2] = (char)('0' + c);
     index += 3;
   } else if (exp >= 10) {
     memcpy(result + index, DIGIT_TABLE + 2 * exp, 2);
     index += 2;
   } else {
-    result[index++] = (char) ('0' + exp);
+    result[index++] = (char)('0' + exp);
   }
 
   return index;
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static inline bool d2d_small_int(const uint64_t ieeeMantissa, const uint32_t ieeeExponent,
-  floating_decimal_64* const v) {
+static inline bool d2d_small_int(const uint64_t ieeeMantissa,
+                                 const uint32_t ieeeExponent,
+                                 floating_decimal_64* const v) {
   const uint64_t m2 = (1ull << RYU_DOUBLE_MANTISSA_BITS) | ieeeMantissa;
-  const int32_t e2 = (int32_t) ieeeExponent - RYU_DOUBLE_BIAS - RYU_DOUBLE_MANTISSA_BITS;
+  const int32_t e2 =
+      (int32_t)ieeeExponent - RYU_DOUBLE_BIAS - RYU_DOUBLE_MANTISSA_BITS;
 
   if (e2 > 0) {
     // f = m2 * 2^e2 >= 2^53 is an integer.
@@ -1234,7 +1298,8 @@ static inline bool d2d_small_int(const uint64_t ieeeMantissa, const uint32_t iee
   }
 
   // Since 2^52 <= m2 < 2^53 and 0 <= -e2 <= 52: 1 <= f = m2 / 2^-e2 < 2^53.
-  // Test if the lower -e2 bits of the significand are 0, i.e. whether the fraction is 0.
+  // Test if the lower -e2 bits of the significand are 0, i.e. whether the
+  // fraction is 0.
   const uint64_t mask = (1ull << -e2) - 1;
   const uint64_t fraction = m2 & mask;
   if (fraction != 0) {
@@ -1249,39 +1314,45 @@ static inline bool d2d_small_int(const uint64_t ieeeMantissa, const uint32_t iee
   return true;
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
 static int d2s_buffered_n(double f, char* result) {
-  // Step 1: Decode the floating-point number, and unify normalized and subnormal cases.
+  // Step 1: Decode the floating-point number, and unify normalized and
+  // subnormal cases.
   const uint64_t bits = double_to_bits(f);
 
 #ifdef RYU_DEBUG
   printf("IN=");
   for (int32_t bit = 63; bit >= 0; --bit) {
-    printf("%d", (int) ((bits >> bit) & 1));
+    printf("%d", (int)((bits >> bit) & 1));
   }
   printf("\n");
 #endif
 
   // Decode bits into sign, mantissa, and exponent.
-  const bool ieeeSign = ((bits >> (RYU_DOUBLE_MANTISSA_BITS + RYU_DOUBLE_EXPONENT_BITS)) & 1) != 0;
+  const bool ieeeSign =
+      ((bits >> (RYU_DOUBLE_MANTISSA_BITS + RYU_DOUBLE_EXPONENT_BITS)) & 1) !=
+      0;
   const uint64_t ieeeMantissa = bits & ((1ull << RYU_DOUBLE_MANTISSA_BITS) - 1);
-  const uint32_t ieeeExponent = (uint32_t) ((bits >> RYU_DOUBLE_MANTISSA_BITS) & ((1u << RYU_DOUBLE_EXPONENT_BITS) - 1));
+  const uint32_t ieeeExponent =
+      (uint32_t)((bits >> RYU_DOUBLE_MANTISSA_BITS) &
+                 ((1u << RYU_DOUBLE_EXPONENT_BITS) - 1));
   // Case distinction; exit early for the easy cases.
-  if (ieeeExponent == ((1u << RYU_DOUBLE_EXPONENT_BITS) - 1u) || (ieeeExponent == 0 && ieeeMantissa == 0)) {
+  if (ieeeExponent == ((1u << RYU_DOUBLE_EXPONENT_BITS) - 1u) ||
+      (ieeeExponent == 0 && ieeeMantissa == 0)) {
     return copy_special_str(result, ieeeSign, ieeeExponent, ieeeMantissa);
   }
 
   floating_decimal_64 v;
   const bool isSmallInt = d2d_small_int(ieeeMantissa, ieeeExponent, &v);
   if (isSmallInt) {
-    // For small integers in the range [1, 2^53), v.mantissa might contain trailing (decimal) zeros.
-    // For scientific notation we need to move these zeros into the exponent.
-    // (This is not needed for fixed-point notation, so it might be beneficial to trim
-    // trailing zeros in to_chars only if needed - once fixed-point notation output is implemented.)
+    // For small integers in the range [1, 2^53), v.mantissa might contain
+    // trailing (decimal) zeros. For scientific notation we need to move these
+    // zeros into the exponent. (This is not needed for fixed-point notation, so
+    // it might be beneficial to trim trailing zeros in to_chars only if needed
+    // - once fixed-point notation output is implemented.)
     for (;;) {
       const uint64_t q = div10(v.mantissa);
-      const uint32_t r = ((uint32_t) v.mantissa) - 10 * ((uint32_t) q);
+      const uint32_t r = ((uint32_t)v.mantissa) - 10 * ((uint32_t)q);
       if (r != 0) {
         break;
       }
@@ -1315,25 +1386,39 @@ enum RyuStatus {
   RYU_MALFORMED_INPUT
 };
 
-
 // Simple clz implementation
 // https://stackoverflow.com/questions/23856596/how-to-count-leading-zeros-in-a-32-bit-unsigned-integer
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-inline int __myclzi(uint32_t x)
-{
+inline int __myclzi(uint32_t x) {
   if (!x) return 32;
 
   int n = 32;
   unsigned y;
 
-  y = x >>16; if (y != 0) { n = n -16; x = y; }
-  y = x >> 8; if (y != 0) { n = n - 8; x = y; }
-  y = x >> 4; if (y != 0) { n = n - 4; x = y; }
-  y = x >> 2; if (y != 0) { n = n - 2; x = y; }
-  y = x >> 1; if (y != 0) return n - 2;
+  y = x >> 16;
+  if (y != 0) {
+    n = n - 16;
+    x = y;
+  }
+  y = x >> 8;
+  if (y != 0) {
+    n = n - 8;
+    x = y;
+  }
+  y = x >> 4;
+  if (y != 0) {
+    n = n - 4;
+    x = y;
+  }
+  y = x >> 2;
+  if (y != 0) {
+    n = n - 2;
+    x = y;
+  }
+  y = x >> 1;
+  if (y != 0) return n - 2;
   return n - x;
-
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
@@ -1345,9 +1430,7 @@ inline uint32_t floor_log2(const uint32_t value) {
 
 // The max function is already defined on Windows.
 NANOSTL_HOST_AND_DEVICE_QUAL
-inline int32_t max32(int32_t a, int32_t b) {
-  return a < b ? b : a;
-}
+inline int32_t max32(int32_t a, int32_t b) { return a < b ? b : a; }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
 inline float int32Bits2Float(uint32_t bits) {
@@ -1357,7 +1440,7 @@ inline float int32Bits2Float(uint32_t bits) {
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static enum RyuStatus s2f_n(const char * buffer, const int len, float * result) {
+static enum RyuStatus s2f_n(const char* buffer, const int len, float* result) {
   if (len == 0) {
     return RYU_INPUT_TOO_SHORT;
   }
@@ -1436,33 +1519,39 @@ static enum RyuStatus s2f_n(const char * buffer, const int len, float * result) 
 #endif
 
   if ((m10digits + e10 <= -46) || (m10 == 0)) {
-    // Number is less than 1e-46, which should be rounded down to 0; return +/-0.0.
-    uint32_t ieee = ((uint32_t) signedM) << (RYU_FLOAT_EXPONENT_BITS + RYU_FLOAT_MANTISSA_BITS);
+    // Number is less than 1e-46, which should be rounded down to 0; return
+    // +/-0.0.
+    uint32_t ieee = ((uint32_t)signedM)
+                    << (RYU_FLOAT_EXPONENT_BITS + RYU_FLOAT_MANTISSA_BITS);
     *result = int32Bits2Float(ieee);
     return RYU_SUCCESS;
   }
   if (m10digits + e10 >= 40) {
     // Number is larger than 1e+39, which should be rounded to +/-Infinity.
-    uint32_t ieee = (((uint32_t) signedM) << (RYU_FLOAT_EXPONENT_BITS + RYU_FLOAT_MANTISSA_BITS)) | (0xffu << RYU_FLOAT_MANTISSA_BITS);
+    uint32_t ieee = (((uint32_t)signedM)
+                     << (RYU_FLOAT_EXPONENT_BITS + RYU_FLOAT_MANTISSA_BITS)) |
+                    (0xffu << RYU_FLOAT_MANTISSA_BITS);
     *result = int32Bits2Float(ieee);
     return RYU_SUCCESS;
   }
 
-  // Convert to binary float m2 * 2^e2, while retaining information about whether the conversion
-  // was exact (trailingZeros).
+  // Convert to binary float m2 * 2^e2, while retaining information about
+  // whether the conversion was exact (trailingZeros).
   int32_t e2;
   uint32_t m2;
   bool trailingZeros;
   if (e10 >= 0) {
     // The length of m * 10^e in bits is:
-    //   log2(m10 * 10^e10) = log2(m10) + e10 log2(10) = log2(m10) + e10 + e10 * log2(5)
+    //   log2(m10 * 10^e10) = log2(m10) + e10 log2(10) = log2(m10) + e10 + e10 *
+    //   log2(5)
     //
-    // We want to compute the FLOAT_MANTISSA_BITS + 1 top-most bits (+1 for the implicit leading
-    // one in IEEE format). We therefore choose a binary output exponent of
+    // We want to compute the FLOAT_MANTISSA_BITS + 1 top-most bits (+1 for the
+    // implicit leading one in IEEE format). We therefore choose a binary output
+    // exponent of
     //   log2(m10 * 10^e10) - (FLOAT_MANTISSA_BITS + 1).
     //
-    // We use floor(log2(5^e10)) so that we get at least this many bits; better to
-    // have an additional bit than to not have enough bits.
+    // We use floor(log2(5^e10)) so that we get at least this many bits; better
+    // to have an additional bit than to not have enough bits.
     e2 = floor_log2(m10) + e10 + log2pow5(e10) - (RYU_FLOAT_MANTISSA_BITS + 1);
 
     // We now compute [m10 * 10^e10 / 2^e2] = [m10 * 5^e10 / 2^(e2-e10)].
@@ -1473,12 +1562,15 @@ static enum RyuStatus s2f_n(const char * buffer, const int len, float * result) 
 
     // We also compute if the result is exact, i.e.,
     //   [m10 * 10^e10 / 2^e2] == m10 * 10^e10 / 2^e2.
-    // This can only be the case if 2^e2 divides m10 * 10^e10, which in turn requires that the
-    // largest power of 2 that divides m10 + e10 is greater than e2. If e2 is less than e10, then
-    // the result must be exact. Otherwise we use the existing multipleOfPowerOf2 function.
-    trailingZeros = e2 < e10 || (e2 - e10 < 32 && multipleOfPowerOf2_32(m10, e2 - e10));
+    // This can only be the case if 2^e2 divides m10 * 10^e10, which in turn
+    // requires that the largest power of 2 that divides m10 + e10 is greater
+    // than e2. If e2 is less than e10, then the result must be exact. Otherwise
+    // we use the existing multipleOfPowerOf2 function.
+    trailingZeros =
+        e2 < e10 || (e2 - e10 < 32 && multipleOfPowerOf2_32(m10, e2 - e10));
   } else {
-    e2 = floor_log2(m10) + e10 - ceil_log2pow5(-e10) - (RYU_FLOAT_MANTISSA_BITS + 1);
+    e2 = floor_log2(m10) + e10 - ceil_log2pow5(-e10) -
+         (RYU_FLOAT_MANTISSA_BITS + 1);
 
     // We now compute [m10 * 10^e10 / 2^e2] = [m10 / (5^(-e10) 2^(e2-e10))].
     int j = e2 - e10 + ceil_log2pow5(-e10) - 1 + RYU_FLOAT_POW5_INV_BITCOUNT;
@@ -1487,14 +1579,15 @@ static enum RyuStatus s2f_n(const char * buffer, const int len, float * result) 
     // We also compute if the result is exact, i.e.,
     //   [m10 / (5^(-e10) 2^(e2-e10))] == m10 / (5^(-e10) 2^(e2-e10))
     //
-    // If e2-e10 >= 0, we need to check whether (5^(-e10) 2^(e2-e10)) divides m10, which is the
-    // case iff pow5(m10) >= -e10 AND pow2(m10) >= e2-e10.
+    // If e2-e10 >= 0, we need to check whether (5^(-e10) 2^(e2-e10)) divides
+    // m10, which is the case iff pow5(m10) >= -e10 AND pow2(m10) >= e2-e10.
     //
-    // If e2-e10 < 0, we have actually computed [m10 * 2^(e10 e2) / 5^(-e10)] above,
-    // and we need to check whether 5^(-e10) divides (m10 * 2^(e10-e2)), which is the case iff
-    // pow5(m10 * 2^(e10-e2)) = pow5(m10) >= -e10.
-    trailingZeros = (e2 < e10 || (e2 - e10 < 32 && multipleOfPowerOf2_32(m10, e2 - e10)))
-        && multipleOfPowerOf5_32(m10, -e10);
+    // If e2-e10 < 0, we have actually computed [m10 * 2^(e10 e2) / 5^(-e10)]
+    // above, and we need to check whether 5^(-e10) divides (m10 * 2^(e10-e2)),
+    // which is the case iff pow5(m10 * 2^(e10-e2)) = pow5(m10) >= -e10.
+    trailingZeros =
+        (e2 < e10 || (e2 - e10 < 32 && multipleOfPowerOf2_32(m10, e2 - e10))) &&
+        multipleOfPowerOf5_32(m10, -e10);
   }
 
 #ifdef RYU_DEBUG
@@ -1502,33 +1595,41 @@ static enum RyuStatus s2f_n(const char * buffer, const int len, float * result) 
 #endif
 
   // Compute the final IEEE exponent.
-  uint32_t ieee_e2 = (uint32_t) max32(0, e2 + RYU_FLOAT_EXPONENT_BIAS + floor_log2(m2));
+  uint32_t ieee_e2 =
+      (uint32_t)max32(0, e2 + RYU_FLOAT_EXPONENT_BIAS + floor_log2(m2));
 
   if (ieee_e2 > 0xfe) {
-    // Final IEEE exponent is larger than the maximum representable; return +/-Infinity.
-    uint32_t ieee = (((uint32_t) signedM) << (RYU_FLOAT_EXPONENT_BITS + RYU_FLOAT_MANTISSA_BITS)) | (0xffu << RYU_FLOAT_MANTISSA_BITS);
+    // Final IEEE exponent is larger than the maximum representable; return
+    // +/-Infinity.
+    uint32_t ieee = (((uint32_t)signedM)
+                     << (RYU_FLOAT_EXPONENT_BITS + RYU_FLOAT_MANTISSA_BITS)) |
+                    (0xffu << RYU_FLOAT_MANTISSA_BITS);
     *result = int32Bits2Float(ieee);
     return RYU_SUCCESS;
   }
 
-  // We need to figure out how much we need to shift m2. The tricky part is that we need to take
-  // the final IEEE exponent into account, so we need to reverse the bias and also special-case
-  // the value 0.
-  int32_t shift = (ieee_e2 == 0 ? 1 : ieee_e2) - e2 - RYU_FLOAT_EXPONENT_BIAS - RYU_FLOAT_MANTISSA_BITS;
+  // We need to figure out how much we need to shift m2. The tricky part is that
+  // we need to take the final IEEE exponent into account, so we need to reverse
+  // the bias and also special-case the value 0.
+  int32_t shift = (ieee_e2 == 0 ? 1 : ieee_e2) - e2 - RYU_FLOAT_EXPONENT_BIAS -
+                  RYU_FLOAT_MANTISSA_BITS;
   assert(shift >= 0);
 #ifdef RYU_DEBUG
   printf("ieee_e2 = %d\n", ieee_e2);
   printf("shift = %d\n", shift);
 #endif
 
-  // We need to round up if the exact value is more than 0.5 above the value we computed. That's
-  // equivalent to checking if the last removed bit was 1 and either the value was not just
-  // trailing zeros or the result would otherwise be odd.
+  // We need to round up if the exact value is more than 0.5 above the value we
+  // computed. That's equivalent to checking if the last removed bit was 1 and
+  // either the value was not just trailing zeros or the result would otherwise
+  // be odd.
   //
-  // We need to update trailingZeros given that we have the exact output exponent ieee_e2 now.
+  // We need to update trailingZeros given that we have the exact output
+  // exponent ieee_e2 now.
   trailingZeros &= (m2 & ((1u << (shift - 1)) - 1)) == 0;
   uint32_t lastRemovedBit = (m2 >> (shift - 1)) & 1;
-  bool roundUp = (lastRemovedBit != 0) && (!trailingZeros || (((m2 >> shift) & 1) != 0));
+  bool roundUp =
+      (lastRemovedBit != 0) && (!trailingZeros || (((m2 >> shift) & 1) != 0));
 
 #ifdef RYU_DEBUG
   printf("roundUp = %d\n", roundUp);
@@ -1540,26 +1641,28 @@ static enum RyuStatus s2f_n(const char * buffer, const int len, float * result) 
   if (ieee_m2 == 0 && roundUp) {
     // Rounding up may overflow the mantissa.
     // In this case we move a trailing zero of the mantissa into the exponent.
-    // Due to how the IEEE represents +/-Infinity, we don't need to check for overflow here.
+    // Due to how the IEEE represents +/-Infinity, we don't need to check for
+    // overflow here.
     ieee_e2++;
   }
-  uint32_t ieee = (((((uint32_t) signedM) << RYU_FLOAT_EXPONENT_BITS) | (uint32_t)ieee_e2) << RYU_FLOAT_MANTISSA_BITS) | ieee_m2;
+  uint32_t ieee =
+      (((((uint32_t)signedM) << RYU_FLOAT_EXPONENT_BITS) | (uint32_t)ieee_e2)
+       << RYU_FLOAT_MANTISSA_BITS) |
+      ieee_m2;
   *result = int32Bits2Float(ieee);
   return RYU_SUCCESS;
 }
 
-
 // naiive implementation of __clzll
 // http://rapidjson.org/clzll_8h_source.html
 NANOSTL_HOST_AND_DEVICE_QUAL
-inline uint32_t __myclzll(uint64_t x)
-{
+inline uint32_t __myclzll(uint64_t x) {
   if (x == 0) return 64;
 
   uint32_t r = 0;
   while (!(x & (static_cast<uint64_t>(1) << 63))) {
-      x <<= 1;
-      ++r;
+    x <<= 1;
+    ++r;
   }
 
   return r;
@@ -1571,7 +1674,6 @@ static inline uint32_t floor_log2(const uint64_t value) {
   return 63 - __myclzll(value);
 }
 
-
 NANOSTL_HOST_AND_DEVICE_QUAL
 inline double int64Bits2Double(uint64_t bits) {
   double f;
@@ -1580,7 +1682,7 @@ inline double int64Bits2Double(uint64_t bits) {
 }
 
 NANOSTL_HOST_AND_DEVICE_QUAL
-static enum RyuStatus s2d_n(const char * buffer, const int len, double * result) {
+static enum RyuStatus s2d_n(const char* buffer, const int len, double* result) {
   if (len == 0) {
     return RYU_INPUT_TOO_SHORT;
   }
@@ -1659,33 +1761,39 @@ static enum RyuStatus s2d_n(const char * buffer, const int len, double * result)
 #endif
 
   if ((m10digits + e10 <= -324) || (m10 == 0)) {
-    // Number is less than 1e-324, which should be rounded down to 0; return +/-0.0.
-    uint64_t ieee = ((uint64_t) signedM) << (RYU_DOUBLE_EXPONENT_BITS + RYU_DOUBLE_MANTISSA_BITS);
+    // Number is less than 1e-324, which should be rounded down to 0; return
+    // +/-0.0.
+    uint64_t ieee = ((uint64_t)signedM)
+                    << (RYU_DOUBLE_EXPONENT_BITS + RYU_DOUBLE_MANTISSA_BITS);
     *result = int64Bits2Double(ieee);
     return RYU_SUCCESS;
   }
   if (m10digits + e10 >= 310) {
     // Number is larger than 1e+309, which should be rounded to +/-Infinity.
-    uint64_t ieee = (((uint64_t) signedM) << (RYU_DOUBLE_EXPONENT_BITS + RYU_DOUBLE_MANTISSA_BITS)) | (0x7ffull << RYU_DOUBLE_MANTISSA_BITS);
+    uint64_t ieee = (((uint64_t)signedM)
+                     << (RYU_DOUBLE_EXPONENT_BITS + RYU_DOUBLE_MANTISSA_BITS)) |
+                    (0x7ffull << RYU_DOUBLE_MANTISSA_BITS);
     *result = int64Bits2Double(ieee);
     return RYU_SUCCESS;
   }
 
-  // Convert to binary float m2 * 2^e2, while retaining information about whether the conversion
-  // was exact (trailingZeros).
+  // Convert to binary float m2 * 2^e2, while retaining information about
+  // whether the conversion was exact (trailingZeros).
   int32_t e2;
   uint64_t m2;
   bool trailingZeros;
   if (e10 >= 0) {
     // The length of m * 10^e in bits is:
-    //   log2(m10 * 10^e10) = log2(m10) + e10 log2(10) = log2(m10) + e10 + e10 * log2(5)
+    //   log2(m10 * 10^e10) = log2(m10) + e10 log2(10) = log2(m10) + e10 + e10 *
+    //   log2(5)
     //
-    // We want to compute the DOUBLE_MANTISSA_BITS + 1 top-most bits (+1 for the implicit leading
-    // one in IEEE format). We therefore choose a binary output exponent of
+    // We want to compute the DOUBLE_MANTISSA_BITS + 1 top-most bits (+1 for the
+    // implicit leading one in IEEE format). We therefore choose a binary output
+    // exponent of
     //   log2(m10 * 10^e10) - (DOUBLE_MANTISSA_BITS + 1).
     //
-    // We use floor(log2(5^e10)) so that we get at least this many bits; better to
-    // have an additional bit than to not have enough bits.
+    // We use floor(log2(5^e10)) so that we get at least this many bits; better
+    // to have an additional bit than to not have enough bits.
     e2 = floor_log2(m10) + e10 + log2pow5(e10) - (RYU_DOUBLE_MANTISSA_BITS + 1);
 
     // We now compute [m10 * 10^e10 / 2^e2] = [m10 * 5^e10 / 2^(e2-e10)].
@@ -1702,12 +1810,15 @@ static enum RyuStatus s2d_n(const char * buffer, const int len, double * result)
 #endif
     // We also compute if the result is exact, i.e.,
     //   [m10 * 10^e10 / 2^e2] == m10 * 10^e10 / 2^e2.
-    // This can only be the case if 2^e2 divides m10 * 10^e10, which in turn requires that the
-    // largest power of 2 that divides m10 + e10 is greater than e2. If e2 is less than e10, then
-    // the result must be exact. Otherwise we use the existing multipleOfPowerOf2 function.
-    trailingZeros = e2 < e10 || (e2 - e10 < 64 && multipleOfPowerOf2(m10, e2 - e10));
+    // This can only be the case if 2^e2 divides m10 * 10^e10, which in turn
+    // requires that the largest power of 2 that divides m10 + e10 is greater
+    // than e2. If e2 is less than e10, then the result must be exact. Otherwise
+    // we use the existing multipleOfPowerOf2 function.
+    trailingZeros =
+        e2 < e10 || (e2 - e10 < 64 && multipleOfPowerOf2(m10, e2 - e10));
   } else {
-    e2 = floor_log2(m10) + e10 - ceil_log2pow5(-e10) - (RYU_DOUBLE_MANTISSA_BITS + 1);
+    e2 = floor_log2(m10) + e10 - ceil_log2pow5(-e10) -
+         (RYU_DOUBLE_MANTISSA_BITS + 1);
     int j = e2 - e10 + ceil_log2pow5(-e10) - 1 + RYU_DOUBLE_POW5_INV_BITCOUNT;
 #if defined(RYU_OPTIMIZE_SIZE)
     uint64_t pow5[2];
@@ -1725,33 +1836,41 @@ static enum RyuStatus s2d_n(const char * buffer, const int len, double * result)
 #endif
 
   // Compute the final IEEE exponent.
-  uint32_t ieee_e2 = (uint32_t) max32(0, e2 + RYU_DOUBLE_EXPONENT_BIAS + floor_log2(m2));
+  uint32_t ieee_e2 =
+      (uint32_t)max32(0, e2 + RYU_DOUBLE_EXPONENT_BIAS + floor_log2(m2));
 
   if (ieee_e2 > 0x7fe) {
-    // Final IEEE exponent is larger than the maximum representable; return +/-Infinity.
-    uint64_t ieee = (((uint64_t) signedM) << (RYU_DOUBLE_EXPONENT_BITS + RYU_DOUBLE_MANTISSA_BITS)) | (0x7ffull << RYU_DOUBLE_MANTISSA_BITS);
+    // Final IEEE exponent is larger than the maximum representable; return
+    // +/-Infinity.
+    uint64_t ieee = (((uint64_t)signedM)
+                     << (RYU_DOUBLE_EXPONENT_BITS + RYU_DOUBLE_MANTISSA_BITS)) |
+                    (0x7ffull << RYU_DOUBLE_MANTISSA_BITS);
     *result = int64Bits2Double(ieee);
     return RYU_SUCCESS;
   }
 
-  // We need to figure out how much we need to shift m2. The tricky part is that we need to take
-  // the final IEEE exponent into account, so we need to reverse the bias and also special-case
-  // the value 0.
-  int32_t shift = (ieee_e2 == 0 ? 1 : ieee_e2) - e2 - RYU_DOUBLE_EXPONENT_BIAS - RYU_DOUBLE_MANTISSA_BITS;
+  // We need to figure out how much we need to shift m2. The tricky part is that
+  // we need to take the final IEEE exponent into account, so we need to reverse
+  // the bias and also special-case the value 0.
+  int32_t shift = (ieee_e2 == 0 ? 1 : ieee_e2) - e2 - RYU_DOUBLE_EXPONENT_BIAS -
+                  RYU_DOUBLE_MANTISSA_BITS;
   assert(shift >= 0);
 #ifdef RYU_DEBUG
   printf("ieee_e2 = %d\n", ieee_e2);
   printf("shift = %d\n", shift);
 #endif
 
-  // We need to round up if the exact value is more than 0.5 above the value we computed. That's
-  // equivalent to checking if the last removed bit was 1 and either the value was not just
-  // trailing zeros or the result would otherwise be odd.
+  // We need to round up if the exact value is more than 0.5 above the value we
+  // computed. That's equivalent to checking if the last removed bit was 1 and
+  // either the value was not just trailing zeros or the result would otherwise
+  // be odd.
   //
-  // We need to update trailingZeros given that we have the exact output exponent ieee_e2 now.
+  // We need to update trailingZeros given that we have the exact output
+  // exponent ieee_e2 now.
   trailingZeros &= (m2 & ((1ull << (shift - 1)) - 1)) == 0;
   uint64_t lastRemovedBit = (m2 >> (shift - 1)) & 1;
-  bool roundUp = (lastRemovedBit != 0) && (!trailingZeros || (((m2 >> shift) & 1) != 0));
+  bool roundUp =
+      (lastRemovedBit != 0) && (!trailingZeros || (((m2 >> shift) & 1) != 0));
 
 #ifdef RYU_DEBUG
   printf("roundUp = %d\n", roundUp);
@@ -1761,24 +1880,25 @@ static enum RyuStatus s2d_n(const char * buffer, const int len, double * result)
   assert(ieee_m2 <= (1ull << (RYU_DOUBLE_MANTISSA_BITS + 1)));
   ieee_m2 &= (1ull << RYU_DOUBLE_MANTISSA_BITS) - 1;
   if (ieee_m2 == 0 && roundUp) {
-    // Due to how the IEEE represents +/-Infinity, we don't need to check for overflow here.
+    // Due to how the IEEE represents +/-Infinity, we don't need to check for
+    // overflow here.
     ieee_e2++;
   }
 
-  uint64_t ieee = (((((uint64_t) signedM) << RYU_DOUBLE_EXPONENT_BITS) | (uint64_t)ieee_e2) << RYU_DOUBLE_MANTISSA_BITS) | ieee_m2;
+  uint64_t ieee =
+      (((((uint64_t)signedM) << RYU_DOUBLE_EXPONENT_BITS) | (uint64_t)ieee_e2)
+       << RYU_DOUBLE_MANTISSA_BITS) |
+      ieee_m2;
   *result = int64Bits2Double(ieee);
   return RYU_SUCCESS;
 }
-
 
 //
 // ========================================================
 //
 
-} // namespace
+}  // namespace ryu
 
-} // namespace nanostl
+}  // namespace nanostl
 
-
-#endif // NANOSTL___STRUTIL_H_
-
+#endif  // NANOSTL___STRUTIL_H_

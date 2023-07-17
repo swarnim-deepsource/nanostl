@@ -2,14 +2,13 @@
 #error "NANOSTL_PSTL must be defined"
 #endif
 
-#include "nanoexecution.h"
-#include "nanovector.h"
-#include "nanoalgorithm.h"
-
 #include <stdio.h>
 
-int main(int argc, char **argv)
-{
+#include "nanoalgorithm.h"
+#include "nanoexecution.h"
+#include "nanovector.h"
+
+int main(int argc, char **argv) {
   nanostl::vector<double> a;
   a.resize(13);
   nanostl::fill(nanostl::execution::par_unseq, a.begin(), a.end(), 42.0);

@@ -4,46 +4,39 @@
 #ifndef TAO_SEQ_PARTIAL_SUM_HPP
 #define TAO_SEQ_PARTIAL_SUM_HPP
 
-//#include <cstddef>
-//#include <utility>
+// #include <cstddef>
+// #include <utility>
 #include "nanoutility.h"
 
-//namespace std = nanostl;
+// namespace std = nanostl;
 
 #include "make_integer_sequence.hpp"
 #include "sum.hpp"
 
-namespace tao
-{
-   namespace seq
-   {
-      namespace impl
-      {
-         template< nanostl::size_t, typename S, typename = make_index_sequence< S::size() > >
-         struct partial_sum;
+namespace tao {
+namespace seq {
+namespace impl {
+template <nanostl::size_t, typename S,
+          typename = make_index_sequence<S::size()> >
+struct partial_sum;
 
-         template< nanostl::size_t I, typename T, T... Ns, nanostl::size_t... Is >
-         struct partial_sum< I, integer_sequence< T, Ns... >, index_sequence< Is... > >
-            : seq::sum< T, ( ( Is < I ) ? Ns : 0 )... >
-         {
-            static_assert( I <= sizeof...( Is ), "tao::seq::partial_sum<I, S>: I is out of range" );
-         };
+template <nanostl::size_t I, typename T, T... Ns, nanostl::size_t... Is>
+struct partial_sum<I, integer_sequence<T, Ns...>, index_sequence<Is...> >
+    : seq::sum<T, ((Is < I) ? Ns : 0)...> {
+  static_assert(I <= sizeof...(Is),
+                "tao::seq::partial_sum<I, S>: I is out of range");
+};
 
-      }  // namespace impl
+}  // namespace impl
 
-      template< nanostl::size_t I, typename T, T... Ns >
-      struct partial_sum
-         : impl::partial_sum< I, integer_sequence< T, Ns... > >
-      {
-      };
+template <nanostl::size_t I, typename T, T... Ns>
+struct partial_sum : impl::partial_sum<I, integer_sequence<T, Ns...> > {};
 
-      template< nanostl::size_t I, typename T, T... Ns >
-      struct partial_sum< I, integer_sequence< T, Ns... > >
-         : impl::partial_sum< I, integer_sequence< T, Ns... > >
-      {
-      };
+template <nanostl::size_t I, typename T, T... Ns>
+struct partial_sum<I, integer_sequence<T, Ns...> >
+    : impl::partial_sum<I, integer_sequence<T, Ns...> > {};
 
-   }  // namespace seq
+}  // namespace seq
 
 }  // namespace tao
 

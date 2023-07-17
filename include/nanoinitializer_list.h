@@ -27,7 +27,6 @@
 
 #include "nanocommon.h"
 
-
 namespace nanostl {
 
 //
@@ -41,66 +40,61 @@ namespace nanostl {
 //
 //===----------------------------------------------------------------------===//
 
+template <class _Ep>
+class _NANOSTL_TEMPLATE_VIS initializer_list {
+  const _Ep* __begin_;
+  size_t __size_;
 
-template<class _Ep>
-class _NANOSTL_TEMPLATE_VIS initializer_list
-{
-    const _Ep* __begin_;
-    size_t    __size_;
+  /*_LIBCPP_INLINE_VISIBILITY*/
+  /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+  initializer_list(const _Ep* __b, size_t __s) __NANOSTL_NOEXCEPT
+      : __begin_(__b),
+        __size_(__s) {}
 
-    /*_LIBCPP_INLINE_VISIBILITY*/
-    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-    initializer_list(const _Ep* __b, size_t __s) __NANOSTL_NOEXCEPT
-        : __begin_(__b),
-          __size_(__s)
-        {}
-public:
-    typedef _Ep        value_type;
-    typedef const _Ep& reference;
-    typedef const _Ep& const_reference;
-    typedef size_t    size_type;
+ public:
+  typedef _Ep value_type;
+  typedef const _Ep& reference;
+  typedef const _Ep& const_reference;
+  typedef size_t size_type;
 
-    typedef const _Ep* iterator;
-    typedef const _Ep* const_iterator;
+  typedef const _Ep* iterator;
+  typedef const _Ep* const_iterator;
 
-    /*_LIBCPP_INLINE_VISIBILITY*/
-    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-    initializer_list() __NANOSTL_NOEXCEPT : __begin_(nullptr), __size_(0) {}
+  /*_LIBCPP_INLINE_VISIBILITY*/
+  /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+  initializer_list() __NANOSTL_NOEXCEPT : __begin_(nullptr), __size_(0) {}
 
-    /*_LIBCPP_INLINE_VISIBILITY*/
-    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-    size_t    size()  const __NANOSTL_NOEXCEPT {return __size_;}
+  /*_LIBCPP_INLINE_VISIBILITY*/
+  /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+  size_t size() const __NANOSTL_NOEXCEPT { return __size_; }
 
-    /*_LIBCPP_INLINE_VISIBILITY*/
-    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-    const _Ep* begin() const __NANOSTL_NOEXCEPT {return __begin_;}
+  /*_LIBCPP_INLINE_VISIBILITY*/
+  /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+  const _Ep* begin() const __NANOSTL_NOEXCEPT { return __begin_; }
 
-    /*_LIBCPP_INLINE_VISIBILITY*/
-    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-    const _Ep* end()   const __NANOSTL_NOEXCEPT {return __begin_ + __size_;}
+  /*_LIBCPP_INLINE_VISIBILITY*/
+  /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+  const _Ep* end() const __NANOSTL_NOEXCEPT { return __begin_ + __size_; }
 };
 
-template<class _Ep>
+template <class _Ep>
 inline /*_LIBCPP_INLINE_VISIBILITY*/
-/*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-const _Ep*
-begin(initializer_list<_Ep> __il) __NANOSTL_NOEXCEPT
-{
-    return __il.begin();
+    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+    const _Ep*
+    begin(initializer_list<_Ep> __il) __NANOSTL_NOEXCEPT {
+  return __il.begin();
 }
 
-template<class _Ep>
+template <class _Ep>
 inline /*_LIBCPP_INLINE_VISIBILITY*/
-/*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
-const _Ep*
-end(initializer_list<_Ep> __il) __NANOSTL_NOEXCEPT
-{
-    return __il.end();
+    /*_LIBCPP_CONSTEXPR_AFTER_CXX11*/
+    const _Ep*
+    end(initializer_list<_Ep> __il) __NANOSTL_NOEXCEPT {
+  return __il.end();
 }
 
 //===----------------------------------------------------------------------===//
 
-
 }  // namespace nanostl
 
-#endif // NANOSTL_INITIALIZER_LIST_H_
+#endif  // NANOSTL_INITIALIZER_LIST_H_

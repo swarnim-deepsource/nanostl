@@ -15,9 +15,7 @@
 
 namespace nanostl {
 
-thread::thread() : thread_handle_(nullptr) {
-
-}
+thread::thread() : thread_handle_(nullptr) {}
 
 thread::~thread() {
   if (thread_handle_) {

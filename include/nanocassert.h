@@ -25,14 +25,14 @@
 #ifndef NANOSTL_CASSERT_H_
 #define NANOSTL_CASSERT_H_
 
-//#ifdef __CUDACC__
+// #ifdef __CUDACC__
 #include <assert.h>
-//#else
-// TODO(LTE): Provide our own `assert` implementation when libc is not available.
-//#ifndef assert
-//#define assert(x)
-//#endif
-//#endif
-
+// #else
+//  TODO(LTE): Provide our own `assert` implementation when libc is not
+//  available.
+// #ifndef assert
+// #define assert(x)
+// #endif
+// #endif
 
 #endif  // NANOSTL_CASSERT_H_

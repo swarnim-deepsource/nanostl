@@ -175,7 +175,6 @@ class valarray {
   }
 
  private:
-
   NANOSTL_HOST_AND_DEVICE_QUAL
   void __initialize() {
     elements_ = 0;
@@ -189,9 +188,8 @@ class valarray {
     elements_[size_ - 1] = val;
   }
 
-
   NANOSTL_HOST_AND_DEVICE_QUAL
-  template<class Ty>
+  template <class Ty>
   inline void __swap(Ty& x, Ty& y) {
     Ty c(x);
     x = y;
@@ -232,11 +230,9 @@ valarray<T> sin(const valarray<T>& va) {
   return result;
 }
 
-
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-
 
 }  // namespace nanostl
 

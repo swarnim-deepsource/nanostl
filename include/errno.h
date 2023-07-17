@@ -22,7 +22,7 @@ Macros:
 
 */
 
-//#include <__config>
+// #include <__config>
 
 #if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
 #pragma GCC system_header
@@ -36,8 +36,8 @@ Macros:
 
 #ifdef ELAST
 
-static const int __elast1 = ELAST+1;
-static const int __elast2 = ELAST+2;
+static const int __elast1 = ELAST + 1;
+static const int __elast2 = ELAST + 2;
 
 #else
 
@@ -199,7 +199,7 @@ static const int __elast2 = 105;
 #endif
 
 #ifndef EOWNERDEAD
-#define EOWNERDEAD  9931
+#define EOWNERDEAD 9931
 #endif
 
 #ifndef EPROTO
@@ -392,6 +392,6 @@ static const int __elast2 = 105;
 #define EMLINK 9979
 #endif
 
-#endif // __cplusplus
+#endif  // __cplusplus
 
 #endif  // _LIBCPP_ERRNO_H

@@ -29,159 +29,134 @@
 #include <stdio.h>
 #endif
 
-#include "nanoiosfwd.h"
-#include "nanoios.h"
-#include "nanosstream.h"
 #include "__nullptr"
+#include "nanoios.h"
+#include "nanoiosfwd.h"
+#include "nanosstream.h"
 
 namespace nanostl {
 
 // Based on libcxx ----------------------
 
 template <class _CharT, class _Traits>
-class basic_ostream
-    : virtual public basic_ios<_CharT, _Traits>
-{
-public:
-    // types (inherited from basic_ios (27.5.4)):
-    typedef _CharT                         char_type;
-    typedef _Traits                        traits_type;
-    typedef typename traits_type::int_type int_type;
-    typedef typename traits_type::pos_type pos_type;
-    typedef typename traits_type::off_type off_type;
+class basic_ostream : virtual public basic_ios<_CharT, _Traits> {
+ public:
+  // types (inherited from basic_ios (27.5.4)):
+  typedef _CharT char_type;
+  typedef _Traits traits_type;
+  typedef typename traits_type::int_type int_type;
+  typedef typename traits_type::pos_type pos_type;
+  typedef typename traits_type::off_type off_type;
 
+  basic_ostream& operator<<(bool __n);
+  basic_ostream& operator<<(short __n);
+  basic_ostream& operator<<(unsigned short __n);
+  basic_ostream& operator<<(int __n);
+  basic_ostream& operator<<(unsigned int __n);
+  // basic_ostream& operator<<(long __n);
+  // basic_ostream& operator<<(unsigned long __n);
+  basic_ostream& operator<<(long long __n);
+  basic_ostream& operator<<(unsigned long long __n);
+  basic_ostream& operator<<(float __f);
+  basic_ostream& operator<<(double __f);
+  basic_ostream& operator<<(long double __f);
+  basic_ostream& operator<<(const void* __p);
 
-    basic_ostream& operator<<(bool __n);
-    basic_ostream& operator<<(short __n);
-    basic_ostream& operator<<(unsigned short __n);
-    basic_ostream& operator<<(int __n);
-    basic_ostream& operator<<(unsigned int __n);
-    //basic_ostream& operator<<(long __n);
-    //basic_ostream& operator<<(unsigned long __n);
-    basic_ostream& operator<<(long long __n);
-    basic_ostream& operator<<(unsigned long long __n);
-    basic_ostream& operator<<(float __f);
-    basic_ostream& operator<<(double __f);
-    basic_ostream& operator<<(long double __f);
-    basic_ostream& operator<<(const void* __p);
+  basic_ostream& operator<<(basic_streambuf<char_type, traits_type>* __sb);
 
-    basic_ostream& operator<<(basic_streambuf<char_type, traits_type>* __sb);
+  inline basic_ostream& operator<<(nullptr_t) { return *this << "nullptr"; }
 
-    inline
-    basic_ostream& operator<<(nullptr_t)
-    { return *this << "nullptr"; }
+  // 27.7.2.7 Unformatted output:
+  basic_ostream& put(char_type __c);
+  basic_ostream& write(const char_type* __s, streamsize __n);
+  basic_ostream& flush();
 
-    // 27.7.2.7 Unformatted output:
-    basic_ostream& put(char_type __c);
-    basic_ostream& write(const char_type* __s, streamsize __n);
-    basic_ostream& flush();
+ protected:
+  // TODO: Uncomment
+  // basic_ostream() {}
 
-protected:
-    // TODO: Uncomment
-    //basic_ostream() {}
-
-private:
-    // FIXME
-    stringstream _ss;
-
+ private:
+  // FIXME
+  stringstream _ss;
 };
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(bool __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    bool __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(short __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    short __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(unsigned short __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    unsigned short __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(int __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    int __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(unsigned int __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    unsigned int __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(long long __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    long long __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(unsigned long long __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    unsigned long long __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(float __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    float __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
 template <class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>&
-basic_ostream<_CharT, _Traits>::operator<<(double __n)
-{
-
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(
+    double __n) {
   _ss << nanostl::to_string(__n);
 
   return *this;
 }
 
-template<>
-basic_ostream<char, nanostl::char_traits<char>>&
-basic_ostream<char, nanostl::char_traits<char>>::operator<<(const void *__n)
-{
+template <>
+basic_ostream<char, nanostl::char_traits<char> >&
+basic_ostream<char, nanostl::char_traits<char> >::operator<<(const void* __n) {
   // FIXME: Assume const char *
-  string str = nanostl::string(static_cast<const char *>(__n));
+  string str = nanostl::string(static_cast<const char*>(__n));
   _ss << str;
 
 #ifdef NANOSTL_DEBUG
@@ -191,14 +166,13 @@ basic_ostream<char, nanostl::char_traits<char>>::operator<<(const void *__n)
   return *this;
 }
 
-
 // --------------------------------------
 
 // Need to link with iostream.cc
 extern ostream cout;
 extern ostream cerr;
 
-} // namespace nanostl
+}  // namespace nanostl
 
 #ifdef NANOSTL_IMPLEMENTATION
 #ifndef NANOSTL_IOSTREAM_IMPLEMENTATION
@@ -229,7 +203,7 @@ ios_base::~ios_base() {
   // TODO
 }
 
-template<>
+template <>
 ostream& ostream::flush() {
   printf("%s", _ss.str().c_str());
 
@@ -238,9 +212,8 @@ ostream& ostream::flush() {
   return (*this);
 }
 
-
 //_ALIGNAS_TYPE (ostream) char cout[sizeof(ostream)];
-ostream cout; // fixme
+ostream cout;  // fixme
 
 // from libcxx
 class DoIOSInit {
@@ -249,20 +222,20 @@ class DoIOSInit {
   ~DoIOSInit();
 };
 
-DoIOSInit::DoIOSInit() {
-  // force_locale_initialization();
+DoIOSInit::DoIOSInit(){
+// force_locale_initialization();
 
 #ifndef _LIBCPP_HAS_NO_STDOUT
-  // ostream* cout_ptr = ::new(cout) ostream(::new(__cout)
-  // __stdoutbuf<char>(stdout, &mb_cout));
+// ostream* cout_ptr = ::new(cout) ostream(::new(__cout)
+// __stdoutbuf<char>(stdout, &mb_cout));
 #endif
-  // ostream* cerr_ptr = ::new(cerr) ostream(::new(__cerr)
-  // __stdoutbuf<char>(stderr, &mb_cerr));
-  //                    ::new(clog) ostream(cerr_ptr->rdbuf());
+// ostream* cerr_ptr = ::new(cerr) ostream(::new(__cerr)
+// __stdoutbuf<char>(stderr, &mb_cerr));
+//                    ::new(clog) ostream(cerr_ptr->rdbuf());
 
-  //_VSTD::unitbuf(*cerr_ptr);
+//_VSTD::unitbuf(*cerr_ptr);
 #ifndef _LIBCPP_HAS_NO_STDOUT
-  // cerr_ptr->tie(cout_ptr);
+// cerr_ptr->tie(cout_ptr);
 #endif
 }
 
@@ -297,7 +270,7 @@ ios_base::Init __start_std_streams;
 #error TODO
 #endif
 
-}
+}  // namespace nanostl
 #endif
 
-#endif // NANOSTL_IOSTREAM_H_
+#endif  // NANOSTL_IOSTREAM_H_

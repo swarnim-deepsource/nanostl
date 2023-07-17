@@ -9,28 +9,27 @@
 #include "nanolimits.h"
 #include "nanomap.h"
 #include "nanomath.h"
+#include "nanomemory.h"
+#include "nanooptional.h"
 #include "nanosstream.h"
 #include "nanostring.h"
 #include "nanoutility.h"
-#include "nanovector.h"
 #include "nanovalarray.h"
-#include "nanomemory.h"
-
-#include "nanooptional.h"
-//#include "nanoany.h"
+#include "nanovector.h"
+// #include "nanoany.h"
 #include "nanovariant.h"
-//#include "nanoexpected.h"
-
-#include "__nanostrutil.h"
+// #include "nanoexpected.h"
 
 #include <cstdio>
 #include <cstdlib>
-//#include <cstdint>
+
+#include "__nanostrutil.h"
+// #include <cstdint>
 #include <cassert>
 #include <cmath>
 #include <iostream>
-#include <vector>
 #include <valarray>
+#include <vector>
 
 #include "nanoiterator.h"
 
@@ -74,7 +73,8 @@ static bool float_equals_by_eps(T x, T y, T eps) {
 // Ulps based equality check
 // TODO(LTE): Support double
 // TODO(LTE): Consider nan, inf case.
-// Based on this blog post: https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+// Based on this blog post:
+// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 static bool float_equals_by_ulps(float x, float y, int max_ulp_diffs) {
   nanostl::IEEE754Float flt_x;
   nanostl::IEEE754Float flt_y;
@@ -84,10 +84,8 @@ static bool float_equals_by_ulps(float x, float y, int max_ulp_diffs) {
 
   if (flt_x.bits.sign != flt_y.bits.sign) {
     // Check if +0/-0
-    if ((flt_x.bits.exponent == 0) &&
-        (flt_y.bits.exponent == 0) &&
-        (flt_x.bits.mantissa == 0) &&
-        (flt_y.bits.mantissa == 0)) {
+    if ((flt_x.bits.exponent == 0) && (flt_y.bits.exponent == 0) &&
+        (flt_x.bits.mantissa == 0) && (flt_y.bits.mantissa == 0)) {
       return true;
     }
 
@@ -102,7 +100,8 @@ static bool float_equals_by_ulps(float x, float y, int max_ulp_diffs) {
   if (diff <= max_ulp_diffs) {
     return true;
   }
-  std::cout << "x: " << x << ", y: " << y << ", diff_ulps = " << diff << std::endl;
+  std::cout << "x: " << x << ", y: " << y << ", diff_ulps = " << diff
+            << std::endl;
 
   return false;
 }
@@ -116,10 +115,8 @@ static bool double_equals_by_ulps(double x, double y, int max_ulp_diffs) {
 
   if (flt_x.bits.sign != flt_y.bits.sign) {
     // Check if +0/-0
-    if ((flt_x.bits.exponent == 0) &&
-        (flt_y.bits.exponent == 0) &&
-        (flt_x.bits.mantissa == 0) &&
-        (flt_y.bits.mantissa == 0)) {
+    if ((flt_x.bits.exponent == 0) && (flt_y.bits.exponent == 0) &&
+        (flt_x.bits.mantissa == 0) && (flt_y.bits.mantissa == 0)) {
       return true;
     }
 
@@ -134,7 +131,8 @@ static bool double_equals_by_ulps(double x, double y, int max_ulp_diffs) {
   if (diff <= max_ulp_diffs) {
     return true;
   }
-  std::cout << "x: " << x << ", y: " << y << ", diff_ulps = " << diff << std::endl;
+  std::cout << "x: " << x << ", y: " << y << ", diff_ulps = " << diff
+            << std::endl;
 
   return false;
 }
@@ -231,8 +229,8 @@ static void test_iterator(void) {
   arr1.push_back(0.2f);
   arr1.push_back(2.2f);
 
-  TEST_CHECK(nanostl::distance(arr.end(), arr.begin()) == std::distance(arr1.end(), arr1.begin()));
-
+  TEST_CHECK(nanostl::distance(arr.end(), arr.begin()) ==
+             std::distance(arr1.end(), arr1.begin()));
 }
 
 static void test_algorithm(void) {
@@ -245,7 +243,8 @@ static void test_algorithm(void) {
     arr.push_back(1.3f);
     arr.push_back(0.2f);
 
-    nanostl::vector<float>::iterator ret = nanostl::max_element(arr.begin(), arr.end());
+    nanostl::vector<float>::iterator ret =
+        nanostl::max_element(arr.begin(), arr.end());
     TEST_CHECK(nanostl::distance(arr.begin(), ret) == 1);
   }
 }
@@ -423,7 +422,6 @@ static void test_math_func1(void) {
 }
 
 static void test_math_exp(void) {
-
   TEST_CHECK(float_equals(nanostl::exp(0.0f), std::exp(0.0f)));
   TEST_CHECK(float_equals_by_ulps(nanostl::exp(1.0f), std::exp(1.0f), 24));
   TEST_CHECK(float_equals_by_ulps(nanostl::exp(0.1f), std::exp(0.1f), 10));
@@ -433,7 +431,7 @@ static void test_math_exp(void) {
 }
 
 static void test_math_log(void) {
-  //std::cout << "log(0) = " << nanostl::log(0.0f) << std::endl;
+  // std::cout << "log(0) = " << nanostl::log(0.0f) << std::endl;
 
   TEST_CHECK(float_equals_by_ulps(nanostl::log(0.0f), std::log(0.0f), 1));
   TEST_CHECK(float_equals_by_ulps(nanostl::log(1.0f), std::log(1.0f), 0));
@@ -444,14 +442,15 @@ static void test_math_log(void) {
 }
 
 static void test_math_log10(void) {
-  //std::cout << "log10(0) = " << nanostl::log10(0.0f) << std::endl;
+  // std::cout << "log10(0) = " << nanostl::log10(0.0f) << std::endl;
 
   TEST_CHECK(float_equals_by_ulps(nanostl::log10(0.0f), std::log10(0.0f), 1));
   TEST_CHECK(float_equals_by_ulps(nanostl::log10(1.0f), std::log10(1.0f), 0));
   TEST_CHECK(float_equals_by_ulps(nanostl::log10(0.1f), std::log10(0.1f), 0));
   TEST_CHECK(float_equals_by_ulps(nanostl::log10(0.01f), std::log10(0.01f), 0));
   TEST_CHECK(float_equals_by_ulps(nanostl::log10(3.33f), std::log10(3.33f), 1));
-  TEST_CHECK(float_equals_by_ulps(nanostl::log10(13.33f), std::log10(13.33f), 1));
+  TEST_CHECK(
+      float_equals_by_ulps(nanostl::log10(13.33f), std::log10(13.33f), 1));
 }
 
 static void test_math_cos(void) {
@@ -473,20 +472,22 @@ static void test_math_sin(void) {
 }
 
 static void test_math_sqrt(void) {
-
   TEST_CHECK(float_equals_by_ulps(nanostl::sqrt(0.0f), std::sqrt(0.0f), 0));
   TEST_CHECK(float_equals_by_ulps(nanostl::sqrt(1.0f), std::sqrt(1.0f), 0));
 
   // TODO(LTE): Use tighter eps bounds.
-  TEST_CHECK(float_equals_by_eps(nanostl::sqrt(0.01f), std::sqrt(0.01f), 0.01f));
+  TEST_CHECK(
+      float_equals_by_eps(nanostl::sqrt(0.01f), std::sqrt(0.01f), 0.01f));
   TEST_CHECK(float_equals_by_eps(nanostl::sqrt(0.1f), std::sqrt(0.1f), 0.001f));
-  TEST_CHECK(float_equals_by_eps(nanostl::sqrt(0.01f), std::sqrt(0.01f), 0.001f));
-  TEST_CHECK(float_equals_by_eps(nanostl::sqrt(3.33f), std::sqrt(3.33f), 0.0001f));
-  TEST_CHECK(float_equals_by_eps(nanostl::sqrt(13.33f), std::sqrt(13.33f), 0.0001f));
+  TEST_CHECK(
+      float_equals_by_eps(nanostl::sqrt(0.01f), std::sqrt(0.01f), 0.001f));
+  TEST_CHECK(
+      float_equals_by_eps(nanostl::sqrt(3.33f), std::sqrt(3.33f), 0.0001f));
+  TEST_CHECK(
+      float_equals_by_eps(nanostl::sqrt(13.33f), std::sqrt(13.33f), 0.0001f));
 }
 
 static void test_math_erf(void) {
-
   TEST_CHECK(float_equals_by_ulps(nanostl::erf(0.0f), std::erf(0.0f), 0));
   TEST_CHECK(float_equals_by_ulps(nanostl::erf(1.0f), std::erf(1.0f), 5));
 
@@ -499,7 +500,6 @@ static void test_math_erf(void) {
 }
 
 static void test_math_erfc(void) {
-
   TEST_CHECK(float_equals_by_ulps(nanostl::erfc(0.0f), std::erfc(0.0f), 0));
 
   TEST_CHECK(float_equals_by_ulps(nanostl::erfc(0.1f), std::erfc(0.1f), 5));
@@ -508,11 +508,11 @@ static void test_math_erfc(void) {
 
   // TODO(LTE): Use eps bounds.
   TEST_CHECK(float_equals_by_ulps(nanostl::erfc(1.0f), std::erfc(1.0f), 19));
-  TEST_CHECK(float_equals_by_ulps(nanostl::erfc(3.33f), std::erfc(3.33f), 341679));
+  TEST_CHECK(
+      float_equals_by_ulps(nanostl::erfc(3.33f), std::erfc(3.33f), 341679));
 }
 
 static void test_math_fmin(void) {
-
   float xn = std::numeric_limits<float>::quiet_NaN();
   float yn = std::numeric_limits<float>::signaling_NaN();
 
@@ -524,7 +524,8 @@ static void test_math_fmin(void) {
   TEST_CHECK(float_equals_by_ulps(nanostl::fmin(x, y), 1.0f, 0));
 
   // (NaN, inf) -> inf
-  TEST_CHECK(nanostl::isinf(nanostl::fmin(xn, pinf)) == std::isinf(std::fmin(xn, pinf)));
+  TEST_CHECK(nanostl::isinf(nanostl::fmin(xn, pinf)) ==
+             std::isinf(std::fmin(xn, pinf)));
 
   // (2, NaN) -> 2
   TEST_CHECK(!nanostl::isnan(nanostl::fmin(y, xn)));
@@ -534,24 +535,26 @@ static void test_math_fmin(void) {
 }
 
 // ierf is not present in std::math
-//static void test_math_ierf(void) {
+// static void test_math_ierf(void) {
 //
 //  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(0.0f), std::ierf(0.0f), 0));
 //  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(1.0f), std::ierf(1.0f), 5));
 //
 //  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(3.33f), std::ierf(3.33f), 1));
-//  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(13.33f), std::ierf(13.33f), 0));
+//  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(13.33f), std::ierf(13.33f),
+//  0));
 //
 //  // TODO(LTE): Use eps bounds.
 //  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(0.1f), std::ierf(0.1f), 43));
-//  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(0.01f), std::ierf(0.01f), 1043));
+//  TEST_CHECK(float_equals_by_ulps(nanostl::ierf(0.01f), std::ierf(0.01f),
+//  1043));
 //}
 
 static void test_float_nan(void) {
-
   float qnan = nanostl::numeric_limits<float>::quiet_NaN();
 
-  nanostl::IEEE754Float flt; flt.f = qnan;
+  nanostl::IEEE754Float flt;
+  flt.f = qnan;
   TEST_CHECK(flt.bits.exponent == 255);
   TEST_CHECK((flt.bits.mantissa & (1 << 22)));
 
@@ -560,22 +563,21 @@ static void test_float_nan(void) {
   TEST_CHECK(flt.bits.exponent == 255);
   TEST_CHECK((flt.bits.mantissa & (1 << 22)) == 0);
   TEST_CHECK(flt.bits.mantissa != 0);
-
 }
 
 static void test_double_nan(void) {
-
   double qnan = nanostl::numeric_limits<double>::quiet_NaN();
 
-  nanostl::IEEE754Double flt; flt.f = qnan;
+  nanostl::IEEE754Double flt;
+  flt.f = qnan;
   TEST_CHECK(flt.bits.exponent == 2047);
   TEST_CHECK((flt.bits.mantissa & (1ull << 51)) != 0);
   // qnanbit: 0008000000000000
 
-  //printf("%016llx\n", flt.ull);
-  //printf("%016llx\n", flt.bits.mantissa);
-  //printf("%016llx\n", (1ull << 51));
-  //printf("%016llx\n", flt.bits.mantissa & (1ull << 51));
+  // printf("%016llx\n", flt.ull);
+  // printf("%016llx\n", flt.bits.mantissa);
+  // printf("%016llx\n", (1ull << 51));
+  // printf("%016llx\n", flt.bits.mantissa & (1ull << 51));
 
   double snan = nanostl::numeric_limits<double>::signaling_NaN();
   flt.f = snan;
@@ -583,22 +585,30 @@ static void test_double_nan(void) {
   TEST_CHECK(flt.bits.exponent == 2047);
   TEST_CHECK((flt.bits.mantissa & (1ull << 51)) == 0);
   TEST_CHECK(flt.bits.mantissa != 0);
-
 }
 
 static void test_digits10(void) {
-  TEST_CHECK(nanostl::numeric_limits<bool>::digits10 == std::numeric_limits<bool>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<bool>::digits10 ==
+             std::numeric_limits<bool>::digits10);
 
-  TEST_CHECK(nanostl::numeric_limits<char>::digits10 == std::numeric_limits<char>::digits10);
-  TEST_CHECK(nanostl::numeric_limits<unsigned char>::digits10 == std::numeric_limits<unsigned char>::digits10);
-  TEST_CHECK(nanostl::numeric_limits<short>::digits10 == std::numeric_limits<short>::digits10);
-  TEST_CHECK(nanostl::numeric_limits<unsigned short>::digits10 == std::numeric_limits<unsigned short>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<char>::digits10 ==
+             std::numeric_limits<char>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<unsigned char>::digits10 ==
+             std::numeric_limits<unsigned char>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<short>::digits10 ==
+             std::numeric_limits<short>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<unsigned short>::digits10 ==
+             std::numeric_limits<unsigned short>::digits10);
 
-  TEST_CHECK(nanostl::numeric_limits<int>::digits10 == std::numeric_limits<int>::digits10);
-  TEST_CHECK(nanostl::numeric_limits<unsigned int>::digits10 == std::numeric_limits<unsigned int>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<int>::digits10 ==
+             std::numeric_limits<int>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<unsigned int>::digits10 ==
+             std::numeric_limits<unsigned int>::digits10);
 
-  TEST_CHECK(nanostl::numeric_limits<long long>::digits10 == std::numeric_limits<long long>::digits10);
-  TEST_CHECK(nanostl::numeric_limits<unsigned long long>::digits10 == std::numeric_limits<unsigned long long>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<long long>::digits10 ==
+             std::numeric_limits<long long>::digits10);
+  TEST_CHECK(nanostl::numeric_limits<unsigned long long>::digits10 ==
+             std::numeric_limits<unsigned long long>::digits10);
 }
 
 static void test_to_string(void) {
@@ -636,13 +646,9 @@ static void test_stod(void) {
 
 static void test_unique_ptr(void) {
   nanostl::unique_ptr<double> ptr(new double);
-
 }
 
-static void test_optional(void) {
-  nanostl::optional<double> a;
-
-}
+static void test_optional(void) { nanostl::optional<double> a; }
 
 #if 0
 static void test_any(void) {
@@ -660,7 +666,6 @@ static void test_variant(void) {
   TEST_CHECK(nanostl::get_if<double>(&a) != nullptr);
   TEST_CHECK(nanostl::get_if<int>(&a) == nullptr);
 }
-
 
 #if 0
 static void test_expected(void) {

@@ -25,9 +25,9 @@
 #ifndef NANOSTL_STREAMBUF_H_
 #define NANOSTL_STREAMBUF_H_
 
+#include "nanoiosfwd.h"
 #include "nanostring.h"
 #include "nanotype_traits.h"
-#include "nanoiosfwd.h"
 
 namespace nanostl {
 
@@ -53,9 +53,9 @@ class basic_streambuf {
   void swap(basic_streambuf& __rhs);
 };
 
-//extern template class basic_streambuf<char>;
+// extern template class basic_streambuf<char>;
 
-//typedef basic_streambuf<char> streambuf;
+// typedef basic_streambuf<char> streambuf;
 
 }  // namespace nanostl
 

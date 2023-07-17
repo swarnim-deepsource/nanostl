@@ -5,10 +5,10 @@
 
 namespace nanostl {
 
-using nonstd::variant;
 using nonstd::get;
 using nonstd::get_if;
+using nonstd::variant;
 
-} // nanostl
+}  // namespace nanostl
 
-#endif // NANOSTL_VARIANT_H_
+#endif  // NANOSTL_VARIANT_H_

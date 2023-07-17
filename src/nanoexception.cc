@@ -10,4 +10,4 @@ void terminate() {
 #endif
 }
 
-} // namespace nanostl
+}  // namespace nanostl

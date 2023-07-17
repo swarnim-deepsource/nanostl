@@ -29,11 +29,11 @@
 
 namespace nanostl {
 
-template<class T>
+template <class T>
 struct atomic
 
-} // namespace nanostl
+}  // namespace nanostl
 
-#endif // NANOSTL_NO_THREAD
+#endif  // NANOSTL_NO_THREAD
 
-#endif // NANOSTL_ATOMIC_H_
+#endif  // NANOSTL_ATOMIC_H_

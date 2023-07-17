@@ -25,10 +25,10 @@
 #ifndef NANOSTL_SSTREAM_H_
 #define NANOSTL_SSTREAM_H_
 
+#include "nanocstdint.h"
 #include "nanoios.h"
 #include "nanostreambuf.h"
 #include "nanostring.h"
-#include "nanocstdint.h"
 
 namespace nanostl {
 
@@ -36,49 +36,43 @@ namespace nanostl {
 // TODO(LTE): Implement
 // TODO(LTE): Inherit ostream
 #if 1
-class stringstream
-{
+class stringstream {
   typedef unsigned long long size_type;
 
-  public:
-    NANOSTL_HOST_AND_DEVICE_QUAL
-    stringstream& operator=(const stringstream&) = delete; // disable copy
+ public:
+  NANOSTL_HOST_AND_DEVICE_QUAL
+  stringstream& operator=(const stringstream&) = delete;  // disable copy
 
-    NANOSTL_HOST_AND_DEVICE_QUAL
-    stringstream& operator=(stringstream&& other) {
-      str_ = other.str_;
-      other.str_ = string();
+  NANOSTL_HOST_AND_DEVICE_QUAL
+  stringstream& operator=(stringstream&& other) {
+    str_ = other.str_;
+    other.str_ = string();
 
-      return (*this);
-    }
+    return (*this);
+  }
 
-    NANOSTL_HOST_AND_DEVICE_QUAL
-    stringstream() {}
+  NANOSTL_HOST_AND_DEVICE_QUAL
+  stringstream() {}
 
-    NANOSTL_HOST_AND_DEVICE_QUAL
-    ~stringstream() {}
+  NANOSTL_HOST_AND_DEVICE_QUAL
+  ~stringstream() {}
 
-    // FIXME(LTE): Signature is different from STL spec. take the reference. drop const
-    NANOSTL_HOST_AND_DEVICE_QUAL
-    string &str() {
-      return str_;
-    }
+  // FIXME(LTE): Signature is different from STL spec. take the reference. drop
+  // const
+  NANOSTL_HOST_AND_DEVICE_QUAL
+  string& str() { return str_; }
 
-    // TODO(LTE): Use stringbuf or streambuf
-    NANOSTL_HOST_AND_DEVICE_QUAL
-    stringstream& operator<<(const nanostl::string &s) {
+  // TODO(LTE): Use stringbuf or streambuf
+  NANOSTL_HOST_AND_DEVICE_QUAL
+  stringstream& operator<<(const nanostl::string& s) {
+    str_ += s;
+    return (*this);
+  }
 
-      str_ += s;
-      return (*this);
-    }
-
-    // TODO(LTE): Inherit ios
-    void clear() {
-      str_ = string();
-    }
+  // TODO(LTE): Inherit ios
+  void clear() { str_ = string(); }
 
  private:
-
   NANOSTL_HOST_AND_DEVICE_QUAL
   size_type size() const { return str_.size(); }
 

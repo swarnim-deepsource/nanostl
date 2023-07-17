@@ -4,31 +4,32 @@
 #ifndef TAO_SEQ_CONFIG_HPP
 #define TAO_SEQ_CONFIG_HPP
 
-//#include <utility>
+// #include <utility>
 
 #ifndef TAO_SEQ_USE_STD_INTEGER_SEQUENCE
-#if defined( __cpp_lib_integer_sequence )
+#if defined(__cpp_lib_integer_sequence)
 #define TAO_SEQ_USE_STD_INTEGER_SEQUENCE
-#elif defined( _LIBCPP_VERSION ) && ( __cplusplus >= 201402L )
+#elif defined(_LIBCPP_VERSION) && (__cplusplus >= 201402L)
 #define TAO_SEQ_USE_STD_INTEGER_SEQUENCE
-#elif defined( _MSC_VER )
+#elif defined(_MSC_VER)
 // Disabled for nanostl
-//#define TAO_SEQ_USE_STD_INTEGER_SEQUENCE
+// #define TAO_SEQ_USE_STD_INTEGER_SEQUENCE
 #endif
 #endif
 
 #ifndef TAO_SEQ_USE_STD_MAKE_INTEGER_SEQUENCE
-#if defined( _GLIBCXX_RELEASE ) && ( _GLIBCXX_RELEASE >= 8 ) && ( __cplusplus >= 201402L )
+#if defined(_GLIBCXX_RELEASE) && (_GLIBCXX_RELEASE >= 8) && \
+    (__cplusplus >= 201402L)
 #define TAO_SEQ_USE_STD_MAKE_INTEGER_SEQUENCE
-#elif defined( _LIBCPP_VERSION ) && ( __cplusplus >= 201402L )
+#elif defined(_LIBCPP_VERSION) && (__cplusplus >= 201402L)
 #define TAO_SEQ_USE_STD_MAKE_INTEGER_SEQUENCE
-#elif defined( _MSC_VER ) && ( _MSC_FULL_VER >= 190023918 )
+#elif defined(_MSC_VER) && (_MSC_FULL_VER >= 190023918)
 // Disabled for nanostl
-//#define TAO_SEQ_USE_STD_MAKE_INTEGER_SEQUENCE
+// #define TAO_SEQ_USE_STD_MAKE_INTEGER_SEQUENCE
 #endif
 #endif
 
-#if defined( __cpp_fold_expressions ) && ( !defined( __GNUC__ ) || ( __GNUC__ >= 8 ) )
+#if defined(__cpp_fold_expressions) && (!defined(__GNUC__) || (__GNUC__ >= 8))
 #define TAO_SEQ_FOLD_EXPRESSIONS
 #endif
 

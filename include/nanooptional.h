@@ -7,6 +7,6 @@ namespace nanostl {
 
 using nonstd::optional;
 
-} // nanostl
+}  // namespace nanostl
 
-#endif // NANOSTL_ANY_H_
+#endif  // NANOSTL_ANY_H_

@@ -25,10 +25,10 @@
 #ifndef NANOSTL_SYSTEM_ERROR_H_
 #define NANOSTL_SYSTEM_ERROR_H_
 
-//#include "nanoios.h"
-//#include "nanostreambuf.h"
-//#include "nanostring.h"
-//#include "nanocstdint.h"
+// #include "nanoios.h"
+// #include "nanostreambuf.h"
+// #include "nanostring.h"
+// #include "nanocstdint.h"
 
 #include "errno.h"
 
@@ -38,7 +38,6 @@ enum class errc {
   invalid_argument = EINVAL,
 };
 
-} // namespace nsnostl
+}  // namespace nanostl
 
-
-#endif // NANOSTL_SYSTEM_ERROR_H_
+#endif  // NANOSTL_SYSTEM_ERROR_H_

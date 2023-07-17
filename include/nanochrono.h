@@ -32,27 +32,22 @@ namespace nanostl {
 
 namespace chrono {
 
-
 template <class Rep>
-struct duration_values
-{
+struct duration_values {
   static constexpr Rep zero();
   static constexpr Rep max();
   static constexpr Rep min();
 };
 
-template <class Rep, class Period = ratio<1>>
-class duration {
-
-
-};
+template <class Rep, class Period = ratio<1> >
+class duration {};
 
 typedef duration<long long, nano> nanoseconds;
 typedef duration<long long, micro> microseconds;
 typedef duration<long long, milli> milliseconds;
 
-} // namespace chrono
+}  // namespace chrono
 
-} // namespace nanostl
+}  // namespace nanostl
 
-#endif // NANOSTL_CHRONO_H_
+#endif  // NANOSTL_CHRONO_H_

@@ -25,8 +25,8 @@
 #ifndef NANOSTL_VECTOR_H_
 #define NANOSTL_VECTOR_H_
 
-#include "nanocommon.h"
 #include "nanoallocator.h"
+#include "nanocommon.h"
 
 #ifdef NANOSTL_DEBUG
 #include <iostream>
@@ -57,7 +57,8 @@ class vector {
   typedef const_pointer const_iterator;
   typedef Allocator allocator_type;
 
-  NANOSTL_HOST_AND_DEVICE_QUAL vector() : elements_(0), capacity_(0), size_(0) {}
+  NANOSTL_HOST_AND_DEVICE_QUAL vector()
+      : elements_(0), capacity_(0), size_(0) {}
 
   NANOSTL_HOST_AND_DEVICE_QUAL vector(const vector& rhs) {
     __initialize();
@@ -129,9 +130,13 @@ class vector {
 
   NANOSTL_HOST_AND_DEVICE_QUAL size_type capacity() const { return capacity_; }
 
-  NANOSTL_HOST_AND_DEVICE_QUAL reference operator[](size_type pos) { return elements_[pos]; }
+  NANOSTL_HOST_AND_DEVICE_QUAL reference operator[](size_type pos) {
+    return elements_[pos];
+  }
 
-  NANOSTL_HOST_AND_DEVICE_QUAL const_reference operator[](size_type pos) const { return elements_[pos]; }
+  NANOSTL_HOST_AND_DEVICE_QUAL const_reference operator[](size_type pos) const {
+    return elements_[pos];
+  }
 
   NANOSTL_HOST_AND_DEVICE_QUAL pointer data() { return elements_; }
 

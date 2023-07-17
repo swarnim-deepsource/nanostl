@@ -26,10 +26,10 @@
 #define NANOSTL_STRING_H_
 
 #include "__nanostrutil.h"
-#include "nanolimits.h"
-#include "nanovector.h"
-#include "nanoutility.h"
 #include "nanoiosfwd.h"
+#include "nanolimits.h"
+#include "nanoutility.h"
+#include "nanovector.h"
 
 #ifdef NANOSTL_DEBUG
 #if !defined(__CUDACC__)
@@ -109,7 +109,8 @@ class basic_string {
   }
 
   NANOSTL_HOST_AND_DEVICE_QUAL
-  void clear() { data_.clear();
+  void clear() {
+    data_.clear();
     data_.resize(1);
     data_[0] = '\0';
   }
@@ -209,7 +210,7 @@ basic_string<charT> &basic_string<charT>::operator+=(
   }
 
   const_iterator first = s.data_.begin();
-  const_iterator last = s.data_.end(); // this contains `\0`
+  const_iterator last = s.data_.end();  // this contains `\0`
 
   for (; first != last; ++first) {
 #ifdef NANOSTL_DEBUG
@@ -225,12 +226,10 @@ basic_string<charT> &basic_string<charT>::operator+=(
   return (*this);
 }
 
-
 typedef basic_string<char> string;
 
 // stream
-ostream &operator<<(ostream &os, const string &s)
-{
+ostream &operator<<(ostream &os, const string &s) {
   os << s;
 
   return os;
@@ -283,7 +282,7 @@ string to_string(int value) {
       i++;
       j--;
 
-      //swap(buf[i++], buf[j--]);
+      // swap(buf[i++], buf[j--]);
     }
   };
 
@@ -331,7 +330,7 @@ string to_string(int64_t value) {
       buf[i] = tmp;
       i++;
       j--;
-      //swap(buf[i++], buf[j--]);
+      // swap(buf[i++], buf[j--]);
     }
   };
 

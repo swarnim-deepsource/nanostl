@@ -1,13 +1,13 @@
-#include "nanovalarray.h"
-
 #include <cstdio>
 #include <cstdlib>
-//#include <cstdint>
+
+#include "nanovalarray.h"
+// #include <cstdint>
 #include <cassert>
 #include <cmath>
 #include <iostream>
-#include <vector>
 #include <valarray>
+#include <vector>
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -49,7 +49,8 @@ static bool float_equals_by_eps(T x, T y, T eps) {
 
 // Ulps based equality check
 // TODO(LTE): Consider nan, inf case.
-// Based on this blog post: https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+// Based on this blog post:
+// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 template <typename T>
 static bool float_equals_by_ulps(T x, T y, int max_ulp_diffs) {
   nanostl::IEEE754Float flt_x;
@@ -60,10 +61,8 @@ static bool float_equals_by_ulps(T x, T y, int max_ulp_diffs) {
 
   if (flt_x.bits.sign != flt_y.bits.sign) {
     // Check if +0/-0
-    if ((flt_x.bits.exponent == 0) &&
-        (flt_y.bits.exponent == 0) &&
-        (flt_x.bits.mantissa == 0) &&
-        (flt_y.bits.mantissa == 0)) {
+    if ((flt_x.bits.exponent == 0) && (flt_y.bits.exponent == 0) &&
+        (flt_x.bits.mantissa == 0) && (flt_y.bits.mantissa == 0)) {
       return true;
     }
 
@@ -78,7 +77,8 @@ static bool float_equals_by_ulps(T x, T y, int max_ulp_diffs) {
   if (diff <= max_ulp_diffs) {
     return true;
   }
-  std::cout << "x: " << x << ", y: " << y << ", diff_ulps = " << diff << std::endl;
+  std::cout << "x: " << x << ", y: " << y << ", diff_ulps = " << diff
+            << std::endl;
 
   return false;
 }
@@ -96,7 +96,6 @@ extern "C" void test_valarray(void) {
 
   TEST_CHECK(y[0] == 2);
   TEST_CHECK(v.size() == 0);
-
 
   {
     nanostl::valarray<float> inp(4);

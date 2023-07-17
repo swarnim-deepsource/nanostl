@@ -48,10 +48,11 @@ class basic_ostream;
 typedef basic_streambuf<char> streambuf;
 typedef basic_ostream<char> ostream;
 
-template <class _State>             class fpos;
+template <class _State>
+class fpos;
 
 // TODO: Use mbstate_t
-typedef fpos<long long>    streampos;
+typedef fpos<long long> streampos;
 
 }  // namespace nanostl
 

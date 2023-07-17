@@ -29,12 +29,10 @@
 
 namespace nanostl {
 
-class mutex {
+class mutex {};
 
-};
+}  // namespace nanostl
 
-} // namespace nanostl
+#endif  // NANOSTL_NO_THREAD
 
-#endif // NANOSTL_NO_THREAD
-
-#endif // NANOSTL_MUTEX_H_
+#endif  // NANOSTL_MUTEX_H_

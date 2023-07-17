@@ -7,6 +7,6 @@ namespace nanostl {
 
 using nonstd::expected;
 
-} // nanostl
+}  // namespace nanostl
 
-#endif // NANOSTL_EXPECTED_H_
+#endif  // NANOSTL_EXPECTED_H_

@@ -29,16 +29,14 @@
 
 namespace nanostl {
 
-class exception
-{
-public:
-    exception() __NANOSTL_NOEXCEPT;
-    exception(const exception&) __NANOSTL_NOEXCEPT;
-    exception& operator=(const exception&) __NANOSTL_NOEXCEPT;
-    virtual ~exception() __NANOSTL_NOEXCEPT;
-    virtual const char* what() const __NANOSTL_NOEXCEPT;
+class exception {
+ public:
+  exception() __NANOSTL_NOEXCEPT;
+  exception(const exception&) __NANOSTL_NOEXCEPT;
+  exception& operator=(const exception&) __NANOSTL_NOEXCEPT;
+  virtual ~exception() __NANOSTL_NOEXCEPT;
+  virtual const char* what() const __NANOSTL_NOEXCEPT;
 };
-
 
 /*noreturn*/ void terminate() __NANOSTL_NOEXCEPT;
 

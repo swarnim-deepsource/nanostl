@@ -30,22 +30,20 @@
 namespace nanostl {
 namespace execution {
 
-class parallel_policy
-{
-  public:
+class parallel_policy {
+ public:
 };
 
-class parallel_unsequenced_policy
-{
-  public:
+class parallel_unsequenced_policy {
+ public:
 };
 
 inline constexpr parallel_policy par{};
 inline constexpr parallel_policy par_unseq{};
 
-} // namespace execution
-} // namespace nanostl
+}  // namespace execution
+}  // namespace nanostl
 
-#endif // NANOSTL_PSTL
+#endif  // NANOSTL_PSTL
 
-#endif // NANOSTL_EXECUTION_H_
+#endif  // NANOSTL_EXECUTION_H_
